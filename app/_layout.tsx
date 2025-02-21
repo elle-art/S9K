@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import app from '@/firebaseConfig';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -16,6 +17,11 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  useEffect(() => {
+    // Firebase initialized here if you want to log or check other actions
+    console.log("Firebase App Initialized", app);
+  }, []);
 
   useEffect(() => {
     if (loaded) {
