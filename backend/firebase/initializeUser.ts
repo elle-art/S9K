@@ -1,35 +1,37 @@
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { saveUid, getStoredUid } from "./storageHelper";
+import { auth, db } from "@/firebaseConfig"; // ✅ use the initialized instances
 
-const auth = getAuth();
-const db = getFirestore();
+export const initializeUser = async () => {
+  const storedUid = await getStoredUid();
 
+  if (storedUid) {
+    const userRef = doc(db, "users", storedUid);
+    const userSnap = await getDoc(userRef);
 
-signInAnonymously(auth)
-  .then((result) => {
-    // user is signed in
-    console.log("User is signed in")
-
-    //check if user is new or not
-    const user = result.user; // 🔑 this is the signed-in user
-    const uid = user.uid;
-
-    // Step 1: Create a reference to the user's document
-    const userRef = doc(db, "users", uid);
-
-    // Step 2: Return the getDoc Promise
-    return getDoc(userRef);
-  })
-  .then((userSnap) => {
-    if(userSnap.exists()) {
-      console.log("Existing user found");
+    if (userSnap.exists()) {
+      console.log("✅ Returning user. Using stored UID:", storedUid);
+      return storedUid;
     } else {
-      console.log("New user - no user data found");
+      console.log("⚠ Stored UID has no matching Firestore doc. Signing in again...");
     }
-    
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log("Error: " + errorCode + ": " + errorMessage);
-  });
+  }
+
+  const result = await signInAnonymously(auth);
+  const uid = result.user.uid;
+  console.log("🆕 Signed in anonymously with UID:", uid);
+
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    await setDoc(userRef, {
+      createdAt: Date.now(),
+    });
+    console.log("📦 New account ");
+  }
+
+  await saveUid(uid);
+  return uid;
+};
