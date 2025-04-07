@@ -18,7 +18,7 @@ export default function TabLayout() {
 
   const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
 
-  if (!user) {
+  if (user) {
     return (                                                                                      <SafeAreaProvider style={{ backgroundColor: "#fff" }}>
         <ThemedView style={{ maxWidth: "80%", height: "100%", marginLeft: "10%", marginRight: "10%" }}>
           <ThemedView style={styles.titleContainer}>
@@ -63,7 +63,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="explore"
+          name="taskList"
           options={{
             title: 'Tasks',
             tabBarIcon: ({ color }) => <FontAwesome5 name="list-alt" size={24} color={color} />,
