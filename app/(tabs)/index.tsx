@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  console.log("working");
+  console.log.toString && console.log.toString();
   const [message, setMessage] = useState('Loading...');
 
   useEffect(() => {
