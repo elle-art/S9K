@@ -1,14 +1,10 @@
 public class UserInfo {
+    public string displayName {get; set;}
     public Availability userAvailability {get; set;}
-    public Task[] taskList {get; set;}
-    public DateTime[] preferredTimes {get; set;}
-    public EventInvite[] inviteInbox {get; set;}
-    public string weeklyGoal {
-        get;
-        set {
-
-        }
-    }
+    public List<Task> taskList {get; set;}
+    public List<TimeBlock> preferredTimes {get; set;}
+    public List<EventInvite> inviteInbox {get; set;}
+    public string WeeklyGoal;
 
     public UserInfo() {
         // constructor/createUserInfo

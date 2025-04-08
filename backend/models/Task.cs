@@ -1,17 +1,21 @@
-public class Task {
-    public string taskName {get; set;}
-    public DateTime? taskDate {get; set;}
-    public string taskStatus {get; set;}
+public class Task
+{
+    public string taskName { get; set; }
+    public DateTime? taskDate { get; set; }
+    public string taskStatus { get; set; }
 
-    public Task() {
-        // constructor/createTask
+    public Task(string taskName, DateTime? taskDate, string taskStatus)
+    {
+        this.taskName = taskName;
+
+        //Tasks can be created with or without a date
+        if (taskDate != null)
+        {
+            this.taskDate = taskDate;
+        }
+
+        this.taskStatus = taskStatus;
     }
 
-    public void EditTask(string name, DateTime date, string status) {
-        
-    }
-
-    public Availability SuggestTaskTime(Availability userAvailability) {
-        return taskAvailability;
-    }
+//Looks at a combo of the availability and current calendar in order to suggest a task time.
 }

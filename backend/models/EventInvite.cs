@@ -1,20 +1,11 @@
-public class EventInvite {
-    private string _message {get; set;}
-    private string _eventId {get; set;}
- 
-    public EventInvite() {
-        // constructor
-    }
+public class EventInvite
+{
+    private string message { get; set; }
+    private Event preConstructedEvent { get; set; }
 
-    public void respondToInvite(string rsvp) {
-        
-    }
-
-    private void addEntry() {
-
-    }
-
-    private void removeEntry() {
-        
+    public EventInvite(Event preConstructedEvent, string message = "")
+    {
+        this.message = message;
+        this.preConstructedEvent = preConstructedEvent;
     }
 }

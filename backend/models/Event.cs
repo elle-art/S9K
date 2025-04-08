@@ -1,43 +1,19 @@
-public class Event {
-    public string eventName {
-        get; 
-        set {
-            // add custom logic
-        }   
-    }
-    public DateTime eventDate {
-        get; 
-        set {
+public class Event
+{
+    public string EventName { get; set; }
+    public DateTime EventDate { get; set; }
+    public TimeBlock EventTimeBlock { get; set; }
+    public string EventType { get; set; }
+    public List<string> EventGroup { get; set; }
 
-        }
-    }
-    public string eventType {
-        get; 
-        set {
+    public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType)
+    {
+        EventName = eventName;
+        EventDate = eventDate;
+        EventTimeBlock = eventTimeBlock;
+        EventType = eventType;
 
-        }}
-    public UserProfile[] eventGroup {get; set;}
-
-    public Event() {
-        // constructor/createEvent
-    }
-
-    public Availability GenerateEventTime(Calendar userCalendar) {
-
-    }
-
-    public void EditEvent(string name, DateTime date, string type) {
-
-    }
-
-    public UserProfile searchForUser(string input) {
-        return aUser;
-    }
-
-    public void addUserToGroup(string userId) {
-
-    }
-    public void removeUserFromGroup(string userId) {
-        
+        //Subject to change depending on if we decide to store user profiles, or just userName strings
+        EventGroup = new List<string>();
     }
 }
