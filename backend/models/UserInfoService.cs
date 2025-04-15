@@ -1,30 +1,33 @@
 public class UserInfoServices
 {
-    public UserInfo createUserInfo(u: UserInfo)
+    public UserInfo createUserInfo(UserInfo u)
+    {
+        return null;
+    }
+
+    public void respondToInvite(bool response)
     {
     }
 
-    public bool respondToInvite(response: bool)
+    public void saveUser(ref UserInfo curUser)
     {
     }
 
-    public void saveUser(u: UserInfo)
+    public void updateUser(ref UserInfo curUser)
     {
     }
 
-    public void updateUser(u:UserInfo)
+    public void getUserInfo()
     {
     }
 
-    public UserInfoServices getUserInfo()
+    public Availability getUserAvailability(ref UserInfo curUser)
     {
+        return curUser.userAvailability;
     }
 
-    public Availability getUserAvailability()
+    public string getName(ref UserInfo curUser)
     {
-    }
-
-    public string getName()
-    {
+        return curUser.displayName;
     }
 }
