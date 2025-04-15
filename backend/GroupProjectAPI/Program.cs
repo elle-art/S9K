@@ -1,7 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();  // ✅ Registers API controllers
+builder.Services.AddControllers();  // Registers API controllers
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -12,12 +12,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");  // ✅ Apply the CORS policy
+app.UseCors("AllowAll");  // Apply the CORS policy
 
 // app.UseHttpsRedirection();
 
-app.UseAuthorization();  // ✅ Important if you plan to add authentication
+app.UseAuthorization();  // Important if you plan to add authentication
 
-app.MapControllers();  // ✅ Maps all controllers automatically
+app.MapControllers();  // Maps all controllers automatically
 
 app.Run();
