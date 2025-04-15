@@ -26,7 +26,7 @@ export default function RootLayout() {
     const initUser = async () => {
       try {
         const uid = await initializeUser();
-        console.log("✅ User initialized with UID:", uid);
+        console.log("✅ User signed in with UID:", uid);
         setUserReady(true);
       } catch (error) {
         console.error("❌ Error initializing user:", error);
