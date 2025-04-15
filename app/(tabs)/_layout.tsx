@@ -18,26 +18,25 @@ export default function TabLayout() {
 
   const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
 
-  if (user) {
-    return (                                                                                      <SafeAreaProvider style={{ backgroundColor: "#fff" }}>
-        <ThemedView style={{ maxWidth: "80%", height: "100%", marginLeft: "10%", marginRight: "10%" }}>
-          <ThemedView style={styles.titleContainer}>
-            <ThemedText type="title" >Welcome to</ThemedText>
-            <ThemedText type="title">The Scheduler 9000!</ThemedText>
-          </ThemedView>
-
-          <ThemedView style={styles.inputContainer}>
-            <ThemedText type="subtitle">Enter your display name:</ThemedText>
-            <TextInput
-              style={styles.input}
-              onChangeText={onChangeName}
-              value={name}
-              placeholder="@bobbyjoe123"
-              keyboardType="ascii-capable"
-            />
-          </ThemedView>
+  if (!user) {
+    return (
+      <ThemedView style={{ width: "100%", height: "100%" }}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title" >Welcome to</ThemedText>
+          <ThemedText type="title">The Scheduler 9000!</ThemedText>
         </ThemedView>
-      </SafeAreaProvider>
+
+        <ThemedView style={styles.inputContainer}>
+          <ThemedText type="subtitle">Enter your display name:</ThemedText>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeName}
+            value={name}
+            placeholder="@bobbyjoe123"
+            keyboardType="ascii-capable"
+          />
+        </ThemedView>
+      </ThemedView>
     );
   } else {
     return (
@@ -92,6 +91,8 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 100,
     marginBottom: 8,
+    marginLeft: 25,
+    marginRight: 25,
   },
   input: {
     height: 40,
