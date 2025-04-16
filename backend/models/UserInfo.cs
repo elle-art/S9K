@@ -1,12 +1,16 @@
-public class UserInfo {
-    public string displayName {get; set;}
-    public Availability userAvailability {get; set;}
-    public List<Task> taskList {get; set;}
-    public List<TimeBlock> preferredTimes {get; set;}
-    public List<EventInvite> inviteInbox {get; set;}
-    public string WeeklyGoal;
-
-    public UserInfo() {
-        // constructor/createUserInfo
-    }
+[FirestoreData]
+public class UserInfo
+{
+    [FirestoreProperty]
+    public string displayName { get; set; }
+    [FirestoreProperty]
+    public Availability userAvailability { get; set; }
+    [FirestoreProperty]
+    public List<Task> taskList { get; set; }
+    [FirestoreProperty]
+    public List<TimeBlock> preferredTimes { get; set; }
+    [FirestoreProperty]
+    public List<EventInvite> inviteInbox { get; set; }
+    [FirestoreProperty]
+    public string weeklyGoal;
 }
