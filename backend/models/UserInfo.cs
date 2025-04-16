@@ -1,3 +1,5 @@
+using Google.Cloud.Firestore;
+
 [FirestoreData]
 public class UserInfo
 {
@@ -12,5 +14,5 @@ public class UserInfo
     [FirestoreProperty]
     public List<EventInvite> inviteInbox { get; set; }
     [FirestoreProperty]
-    public string weeklyGoal;
+    public string weeklyGoal { get; set; };
 }

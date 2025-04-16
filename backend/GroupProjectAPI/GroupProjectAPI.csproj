@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\models\*.cs"/>
+    <Compile Include="..\models\*.cs" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.10.0" />
     <PackageReference Include="Ical.Net" Version="4.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
