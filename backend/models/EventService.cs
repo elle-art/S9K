@@ -34,7 +34,7 @@ public class EventService
         if (type != null)
             eventTBE.EventType = type;
 
-        
+
     }
 
     //To-Do: search for user logic()

@@ -1,18 +1,16 @@
+public struct TimeBlock
 {
-    public struct TimeBlock
+    public TimeBlock(TimeOnly startTime, TimeOnly endTime)
     {
-        public TimeBlock(TimeSpan startTime, TimeSpan endTime)
-        {
-            StartTime = startTime;
-            EndTime = endTime;
-        }
+        StartTime = startTime;
+        EndTime = endTime;
+    }
 
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
 
-        public int getLength()
-        {
-            return (int)(EndTime - StartTime).TotalHours;
-        }
+    public int getLength()
+    {
+        return (int)(EndTime - StartTime).TotalHours;
     }
 }

@@ -1,8 +1,11 @@
+using Google.Cloud.Firestore;
+
 public class UserInfoServices
 {
-    public UserInfo createUserInfo(u: UserInfo)
+    public async Task<UserInfo> createUserInfo(UserInfo u)
     {
-        DocumentReference docRef = db.Collection("users").Document(u.displayName);
+        FirebaseCommunications db = new FirebaseCommunications();
+        DocumentReference docRef = db.Collection("users").Document(u.displayName); // needs FBComm class impl, but the collection does exist in FB project console
         UserInfo user = new UserInfo
         {
             displayName = u.displayName,
@@ -13,40 +16,41 @@ public class UserInfoServices
             weeklyGoal = u.weeklyGoal,
         };
         await docRef.SetAsync(user);
+
+        return user;
     }
 
-    public bool respondToInvite(response: bool)
+    public void respondToInvite(bool response)
     {
-        // TODo: configure messages between user's in FB
+        // TODO: configure messages between user's in FB
     }
 
-    public void saveUser(u: UserInfo)
+    // Dependent on FBComm impl
+    public void saveUser(ref UserInfo curUser)
     {
         FirebaseCommunications dbTrans = new FirebaseCommunications();
-        dbTrans.save(u);
+        dbTrans.save(curUser);
     }
 
-    public void updateUser(u:UserInfo)
+    public void updateUser(ref UserInfo curUser)
     {
         FirebaseCommunications dbTrans = new FirebaseCommunications();
-        dbTrans.update(u);
+        dbTrans.update(curUser);
     }
-    // Assuming we'll eventually need to pass id's or such to retrieve data
-    public UserInfoServices getUserInfo()
-    {
+
+    public void getUserInfo(ref UserInfo curUser)
+    {// might change to getUserByID?
         FirebaseCommunications dbTrans = new FirebaseCommunications();
-        return dbTrans.get(u);
+        dbTrans.get(curUser);
     }
 
-    public Availability getUserAvailability()
+    public Availability getUserAvailability(ref UserInfo curUser)
     {
-         UserInfo u = getUserInfo();
-         return u.userAvailability;
+        return curUser.userAvailability;
     }
 
-    public string getName()
+    public string getName(ref UserInfo curUser)
     {
-        UserInfo u = getUserInfo();
-         return u.displayName;
+        return curUser.displayName;
     }
 }
