@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class Report {
     public DateTime reportDate {get; set;}
     public UserInfo userData {get; set;}

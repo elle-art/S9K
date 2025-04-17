@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class UserInfoServices
 {
     public UserInfo createUserInfo(UserInfo u)

@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class CalendarService
 {
     //To-do: National Holiday retrieval logic

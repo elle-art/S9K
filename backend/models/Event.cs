@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class Event
 {
     public string EventName { get; set; }

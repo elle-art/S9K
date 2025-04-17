@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class ReportService
 {
     //To-do: Report generation logic

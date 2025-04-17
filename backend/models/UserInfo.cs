@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class UserInfo {
     public string displayName {get; set;}
     public Availability userAvailability {get; set;}

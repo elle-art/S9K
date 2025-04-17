@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class EventInvite
 {
     private string message { get; set; }

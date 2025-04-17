@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class Availability
 {
     //An array of integer tuple lists that represent the availability
@@ -21,6 +23,25 @@ public class Availability
         // Add the time block to the schedule
         AddTimeBlock(day, block);
     }
+
+    public bool HasTimeBlock(int day, TimeBlock block)
+{
+    // Ensure the day is valid and the schedule for the day is not null
+    if (day < 0 || day > 6 || weeklySchedule[day] == null)
+        return false;
+
+    // Iterate through the time blocks for the given day
+    foreach (var tb in weeklySchedule[day])
+    {
+        if (tb.StartTime == block.StartTime && tb.EndTime == block.EndTime)
+        {
+            return true;
+        }
+    }
+
+    // Return false if no matching time block is found
+    return false;
+}
 
     private static TimeBlock mergeTimeBlock(TimeBlock initialTimeBlock, TimeBlock compTimeBlock)
     {

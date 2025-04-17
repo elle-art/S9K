@@ -1,3 +1,5 @@
+namespace backend.models;
+
 public class Task
 {
     public string taskName { get; set; }
