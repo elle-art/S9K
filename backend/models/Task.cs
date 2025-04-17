@@ -4,11 +4,11 @@ using Google.Cloud.Firestore;
 public class Task
 {
     [FirestoreProperty]
-    public required string taskName { get; set; }
+    public string taskName { get; set; }
     [FirestoreProperty]
     public DateTime? taskDate { get; set; }
     [FirestoreProperty]
-    public required string taskStatus { get; set; }
+    public string taskStatus { get; set; }
 
     public Task(string taskName, DateTime? taskDate, string taskStatus)
     {
@@ -23,5 +23,5 @@ public class Task
         this.taskStatus = taskStatus;
     }
 
-//Looks at a combo of the availability and current calendar in order to suggest a task time.
+    //Looks at a combo of the availability and current calendar in order to suggest a task time.
 }

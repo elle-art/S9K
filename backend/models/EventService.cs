@@ -1,14 +1,22 @@
+using Google.Cloud.Firestore;
+
 public class EventService
 {
 
 
     //To-Do: Event creation logic implementation
-    //To-Do: Determine where event addition to calendar is performed
+    //To-Do: Determine where event addition to calendar is performed - separate function from create
     //To-Do: Event invite sending (when applicable) on event creation
 
-    public Event CreateEvent(ref Calendar userCal)
+    public async Task<Event> CreateEvent(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<string> group)
     {
-        return null;
+        FirebaseCommunications db = new FirebaseCommunications();
+        DocumentReference docRef = db.Collection("events").Document(eventName); // check collection name in FB
+        Event newEvent = new Event(eventName, eventDate, eventTimeBlock, eventType, group);
+
+        await docRef.SetAsync(newEvent);
+
+        return newEvent;
     }
 
     //To-do: Event time generation algorithm algorithm

@@ -1,10 +1,17 @@
+using Google.Cloud.Firestore;
 public class TaskService
 {
 
     //To-do: Task Creation logic
-    public Task addTask (string name, DateTime? date, string status)
+    public async Task<Task> AddTask (string name, DateTime? date, string status)
     {
-        return null;
+        FirebaseCommunications db = new FirebaseCommunications();
+        DocumentReference docRef = db.Collection("tasks").Document(name); // check collection name in FB
+        Task task = new Task(name, date, status);
+
+        await docRef.SetAsync(task);
+
+        return task;
     }
 
     //To-do: Task time Generation logic

@@ -8,7 +8,7 @@ public class Availability
     //[0-6] = [Monday-Sunday]
     [FirestoreProperty]
 
-    private List<TimeBlock>[] weeklySchedule { get; set; }
+    public required List<TimeBlock>[] weeklySchedule { get; set; }
 
     public Availability()
     {

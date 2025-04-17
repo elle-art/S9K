@@ -1,9 +1,13 @@
+using Google.Cloud.Firestore;
+
 public class AvailabilityService
 {
 
     //To-Do: Firebase shenanigans to find if an existing availability is stored for this user (That search can be implemented in the controller)
-    public Availability CreateAvailability(bool FBEntryExists = false)
+    public async Task<Availability> CreateAvailability(List<TimeBlock>[] schedule, bool FBEntryExists = false)
     {
+        FirebaseCommunications db = new FirebaseCommunications();
+
         if (FBEntryExists)
         {
             //aforementioned FireBase shenanigans go here
@@ -14,7 +18,15 @@ public class AvailabilityService
         else
         {
             //To-do: Store this in the user info as userAvailability.
-            return new Availability();
+            DocumentReference docRef = db.Collection("availabilities").Document('a'); // check collection name in FB + needs id/name
+            Availability availability = new Availability
+            {
+                weeklySchedule = schedule
+            };
+
+            await docRef.SetAsync(availability);
+
+            return availability;
         }
     }
 
