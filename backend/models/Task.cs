@@ -1,8 +1,14 @@
+using Google.Cloud.Firestore;
+
+[FirestoreData]
 public class Task
 {
-    public string taskName { get; set; }
+    [FirestoreProperty]
+    public required string taskName { get; set; }
+    [FirestoreProperty]
     public DateTime? taskDate { get; set; }
-    public string taskStatus { get; set; }
+    [FirestoreProperty]
+    public required string taskStatus { get; set; }
 
     public Task(string taskName, DateTime? taskDate, string taskStatus)
     {

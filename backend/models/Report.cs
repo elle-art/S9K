@@ -1,12 +1,20 @@
-public class Report {
-    public DateTime reportDate {get; set;}
-    public UserInfo userData {get; set;}
-    public List<Task> completedTasks {get; set;}
+using Google.Cloud.Firestore;
+
+[FirestoreData]
+public class Report
+{
+    [FirestoreProperty]
+    public DateTime reportDate { get; set; }
+    [FirestoreProperty]
+    public UserInfo userData { get; set; }
+    [FirestoreProperty]
+    public List<Task> completedTasks { get; set; }
 
     //Subject to change
-    public List<Event> eventData {get; set;}
+    public List<Event> eventData { get; set; }
 
-    public Report() {
+    public Report()
+    {
         // constructor/createTask
     }
 }

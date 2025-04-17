@@ -1,8 +1,13 @@
+using Google.Cloud.Firestore;
+
+[FirestoreData]
 public class Availability
 {
     //An array of integer tuple lists that represent the availability
     //of the given user.
     //[0-6] = [Monday-Sunday]
+    [FirestoreProperty]
+
     private List<TimeBlock>[] weeklySchedule { get; set; }
 
     public Availability()
