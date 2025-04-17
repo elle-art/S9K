@@ -47,4 +47,4 @@ obj/
 *.sourcelink.json
 
 # ignore the firebase private key
-/backend/firebase/firebase-key.json
+/backend/GroupProjectAPI/firebase

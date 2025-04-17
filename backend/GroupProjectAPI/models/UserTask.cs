@@ -1,4 +1,5 @@
-public class Task {
+
+public class UserTask {
     // public string taskName {get; set;}
     // public DateTime? taskDate {get; set;}
     // public string taskStatus {get; set;}
