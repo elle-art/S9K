@@ -38,4 +38,27 @@ public class AvailabilityServiceTests
         Assert.True(userAvailability.HasTimeBlock(day, timeBlock3));
         Assert.True(userAvailability.HasTimeBlock(day, timeBlock4));
     }
+
+    [Fact]
+    public void HasTimeBlock_ReturnsTrue_WhenMatchingBlockExists()
+    {
+        var schedule = new Availability();
+        var block = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("11:00"));
+
+        schedule.AddTimeBlock(1, block); // method to add a block
+        bool result = schedule.HasTimeBlock(1, block);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void HasConflict_ReturnsTrue_WhenTimeBlocksOverlap()
+    {
+        var block1 = new TimeBlock(TimeOnly.Parse("10:30"), TimeOnly.Parse("11:00"));
+        var block2 = new TimeBlock(TimeOnly.Parse("10:30"), TimeOnly.Parse("11:00"));
+
+        var result = Availability.hasConflict(block1, block2);
+
+        Assert.True(result);
+    }
 }
