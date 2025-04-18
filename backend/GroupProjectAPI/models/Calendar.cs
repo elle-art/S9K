@@ -1,15 +1,17 @@
-public class Calendar {
-    // public string userId {get; set;}
-    // public DateTime[] calendarData {get; set;}
+using Google.Cloud.Firestore;
 
-    // public Calendar() {
-    //     // constructor
-    // }
+namespace Backend.Models
+{
+    [FirestoreData]
+    public class Calendar
+    {
+        [FirestoreProperty]
 
-    // public void retrieveNationalHolidays() {
-        
-    // }
+        public List<Event> events { get; set; }
 
-    // public void generateSchedule() {
-    // }
+        public Calendar()
+        {
+            // constructor
+        }
+    }
 }

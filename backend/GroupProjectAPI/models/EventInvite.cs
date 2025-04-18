@@ -1,20 +1,19 @@
-public class EventInvite {
-    // private string _message {get; set;}
-    // private string _eventId {get; set;}
- 
-    // public EventInvite() {
-    //     // constructor
-    // }
+using Google.Cloud.Firestore;
 
-    // public void respondToInvite(string rsvp) {
-        
-    // }
+namespace Backend.Models
+{
+    [FirestoreData]
+    public class EventInvite
+    {
+        [FirestoreProperty]
+        private string message { get; set; }
+        [FirestoreProperty]
+        private Event preConstructedEvent { get; set; }
 
-    // private void addEntry() {
-
-    // }
-
-    // private void removeEntry() {
-        
-    // }
+        public EventInvite(Event preConstructedEvent, string message = "")
+        {
+            this.message = message;
+            this.preConstructedEvent = preConstructedEvent;
+        }
+    }
 }

@@ -12,7 +12,7 @@ Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", keyPath);
 FirestoreDb db = FirestoreDb.Create("the-scheduler-9000");
 
 // Add services to the container.
-builder.Services.AddControllers();  // ✅ Registers API controllers
+builder.Services.AddControllers();  // Registers API controllers
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -58,8 +58,8 @@ app.UseCors("AllowAll");  // ✅ Apply the CORS policy
 
 // app.UseHttpsRedirection();
 
-app.UseAuthorization();  // ✅ Important if you plan to add authentication
+app.UseAuthorization();  // Important if you plan to add authentication
 
-app.MapControllers();  // ✅ Maps all controllers automatically
+app.MapControllers();  // Maps all controllers automatically
 
 app.Run();

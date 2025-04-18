@@ -1,14 +1,23 @@
-public class Report {
-    // public DateTime reportDate {get; set;}
-    // public UserInfo userData {get; set;}
-    // public Task[] completedTasks {get; set;}
-    // public int[] eventData {get; set;}
+using Google.Cloud.Firestore;
 
-    // public Report() {
-    //     // constructor/createTask
-    // }
+namespace Backend.Models
+{
+    [FirestoreData]
+    public class Report
+    {
+        [FirestoreProperty]
+        public DateTime reportDate { get; set; }
+        [FirestoreProperty]
+        public UserInfo userData { get; set; }
+        [FirestoreProperty]
+        public List<UserTask> completedTasks { get; set; }
 
-    // public void generateUserWeeklyReport() {
-        
-    // }
+        //Subject to change
+        public List<Event> eventData { get; set; }
+
+        public Report()
+        {
+            // constructor/createTask
+        }
+    }
 }
