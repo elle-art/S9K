@@ -1,14 +1,21 @@
 namespace backend.models;
 
-public class UserInfo {
-    public string displayName {get; set;}
-    public Availability userAvailability {get; set;}
-    public List<Task> taskList {get; set;}
-    public List<TimeBlock> preferredTimes {get; set;}
-    public List<EventInvite> inviteInbox {get; set;}
-    public string WeeklyGoal;
+using Google.Cloud.Firestore;
 
-    public UserInfo() {
-        // constructor/createUserInfo
-    }
+[FirestoreData]
+public class UserInfo
+{
+    [FirestoreProperty]
+    public required string displayName { get; set; }
+    [FirestoreProperty]
+    public Availability? userAvailability { get; set; }
+    [FirestoreProperty]
+    public List<Task>? taskList { get; set; }
+    [FirestoreProperty]
+    public List<TimeBlock>? preferredTimes { get; set; }
+    [FirestoreProperty]
+    public required List<EventInvite> inviteInbox { get; set; }
+    
+    [FirestoreProperty]
+    public string? weeklyGoal { get; set; }
 }

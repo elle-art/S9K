@@ -1,21 +1,29 @@
 namespace backend.models;
 
+using Google.Cloud.Firestore;
+
+[FirestoreData]
 public class Event
 {
+    [FirestoreProperty]
     public string EventName { get; set; }
+    [FirestoreProperty]
     public DateTime EventDate { get; set; }
+    [FirestoreProperty]
     public TimeBlock EventTimeBlock { get; set; }
-    public string EventType { get; set; }
-    public List<string> EventGroup { get; set; }
+    [FirestoreProperty]
+    public string? EventType { get; set; }
+    [FirestoreProperty]
+    public List<string>? EventGroup { get; set; }
 
-    public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType)
+    public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<string> eventGroup)
     {
-        EventName = eventName;
-        EventDate = eventDate;
-        EventTimeBlock = eventTimeBlock;
-        EventType = eventType;
+        this.EventName = eventName;
+        this.EventDate = eventDate;
+        this.EventTimeBlock = eventTimeBlock;
+        this.EventType = eventType;
 
         //Subject to change depending on if we decide to store user profiles, or just userName strings
-        EventGroup = new List<string>();
+        this.EventGroup = new List<string>();
     }
 }

@@ -1,9 +1,15 @@
 namespace backend.models;
 
+using Google.Cloud.Firestore;
+
+[FirestoreData]
 public class Task
 {
+    [FirestoreProperty]
     public string taskName { get; set; }
+    [FirestoreProperty]
     public DateTime? taskDate { get; set; }
+    [FirestoreProperty]
     public string taskStatus { get; set; }
 
     public Task(string taskName, DateTime? taskDate, string taskStatus)
@@ -19,5 +25,5 @@ public class Task
         this.taskStatus = taskStatus;
     }
 
-//Looks at a combo of the availability and current calendar in order to suggest a task time.
+    //Looks at a combo of the availability and current calendar in order to suggest a task time.
 }
