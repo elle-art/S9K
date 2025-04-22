@@ -15,7 +15,8 @@ public class UserInfo
     public List<TimeBlock>? preferredTimes { get; set; }
     [FirestoreProperty]
     public required List<EventInvite> inviteInbox { get; set; }
-    
+    [FirestoreProperty]
+    public Calendar? userCalendar { get; set; }
     [FirestoreProperty]
     public string? weeklyGoal { get; set; }
 }
