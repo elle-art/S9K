@@ -5,11 +5,11 @@ public class TaskService
 {
 
     //To-do: Task Creation logic
-    public async Task<Task> AddTask (string name, DateTime? date, string status)
+    public async Task<UserTask> AddTask (string name, DateTime? date, string status)
     {
         FirebaseCommunications db = new FirebaseCommunications();
         DocumentReference docRef = db.Collection("tasks").Document(name); // check collection name in FB
-        Task task = new Task(name, date, status);
+        UserTask task = new UserTask(name, date, status);
 
         await docRef.SetAsync(task);
 

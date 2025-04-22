@@ -10,7 +10,7 @@ public class Report
     [FirestoreProperty]
     public UserInfo userData { get; set; }
     [FirestoreProperty]
-    public List<Task> completedTasks { get; set; }
+    public List<UserTask> completedTasks { get; set; }
 
     //Subject to change
     public List<Event> eventData { get; set; }

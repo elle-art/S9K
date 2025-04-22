@@ -50,7 +50,7 @@ public class Availability
         return false;
     }
 
-    private void AddTimeBlock(int day, TimeBlock blockToAdd)
+    public void AddTimeBlock(int day, TimeBlock blockToAdd)
     {
         if (weeklySchedule[day] == null)
             weeklySchedule[day] = new List<TimeBlock>();

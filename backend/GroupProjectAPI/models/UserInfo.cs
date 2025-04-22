@@ -10,7 +10,7 @@ public class UserInfo
     [FirestoreProperty]
     public Availability? userAvailability { get; set; }
     [FirestoreProperty]
-    public List<Task>? taskList { get; set; }
+    public List<UserTask>? taskList { get; set; }
     [FirestoreProperty]
     public List<TimeBlock>? preferredTimes { get; set; }
     [FirestoreProperty]

@@ -3,7 +3,7 @@ namespace backend.models;
 using Google.Cloud.Firestore;
 
 [FirestoreData]
-public class Task
+public class UserTask
 {
     [FirestoreProperty]
     public string taskName { get; set; }
@@ -12,7 +12,7 @@ public class Task
     [FirestoreProperty]
     public string taskStatus { get; set; }
 
-    public Task(string taskName, DateTime? taskDate, string taskStatus)
+    public UserTask(string taskName, DateTime? taskDate, string taskStatus)
     {
         this.taskName = taskName;
 
