@@ -1,17 +1,13 @@
+namespace backend.models;
+
 using Google.Cloud.Firestore;
 
-namespace Backend.Models
-{
-    [FirestoreData]
-    public class Calendar
-    {
-        [FirestoreProperty]
+[FirestoreData]
+public class Calendar {
+    [FirestoreProperty]
+    public List<Event> events {get; set;}
 
-        public List<Event> events { get; set; }
-
-        public Calendar()
-        {
-            // constructor
-        }
+    public Calendar() {
+        events = new List<Event>();
     }
 }

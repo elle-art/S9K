@@ -1,11 +1,10 @@
-namespace Backend.Models
+namespace backend.models;
+
+public class ReportService
 {
-    public class ReportService
+    //To-do: Report generation logic - not saved to db, should be  sent to frontend via API/Controller class
+    public Report generateUserWeeklyReport(Calendar userCal, Availability userAv) 
     {
-        //To-do: Report generation logic
-        public Report generateUserWeeklyReport(Calendar userCal, Availability userAv)
-        {
-            return null;
-        }
+        return null;
     }
 }

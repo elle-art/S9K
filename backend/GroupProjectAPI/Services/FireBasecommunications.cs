@@ -3,7 +3,7 @@ using Google.Cloud.Firestore;
 using System.Threading.Tasks;
 
 namespace Backend.Services {
-public static class FireBaseCommunications
+public static class FirebaseCommunications
 {
     private static readonly FirestoreDb db = FirestoreDb.Create("the-scheduler-9000");
 

@@ -1,19 +1,18 @@
+namespace backend.models;
+
 using Google.Cloud.Firestore;
 
-namespace Backend.Models
+[FirestoreData]
+public class EventInvite
 {
-    [FirestoreData]
-    public class EventInvite
-    {
-        [FirestoreProperty]
-        private string message { get; set; }
-        [FirestoreProperty]
-        private Event preConstructedEvent { get; set; }
+    [FirestoreProperty]
+    private string message { get; set; }
+    [FirestoreProperty]
+    private Event preConstructedEvent { get; set; }
 
-        public EventInvite(Event preConstructedEvent, string message = "")
-        {
-            this.message = message;
-            this.preConstructedEvent = preConstructedEvent;
-        }
+    public EventInvite(Event preConstructedEvent, string message = "")
+    {
+        this.message = message;
+        this.preConstructedEvent = preConstructedEvent;
     }
 }
