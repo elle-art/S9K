@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -10,15 +10,31 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { hasUsername as checkUsernameExists } from '@/backend/firebase/userHelper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
+  const [name, onChangeName] = useState(''); // ***add logic to create user account after input in onChangeName function
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const result = await checkUsernameExists(); // 👈 from userHelper.ts
+      setHasUsername(result);
+    };
+
+    checkUser();
+  }, []);
+
+  if (hasUsername === null) {
+    // Optional: add a loading spinner here
+    return null;
+  }
+
   const user = false; // ****add logic to see if user account exists
 
-  const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
-
-  if (!user) {
+  if (!hasUsername) {
     return (
       <ThemedView style={{ width: "100%", height: "100%" }}>
         <ThemedView style={styles.titleContainer}>
