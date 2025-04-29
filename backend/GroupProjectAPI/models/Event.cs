@@ -14,9 +14,9 @@ public class Event
     [FirestoreProperty]
     public string? EventType { get; set; }
     [FirestoreProperty]
-    public List<string>? EventGroup { get; set; }
+    public List<UserInfo> EventGroup { get; set; }
 
-    public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<string> eventGroup)
+    public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<UserInfo> eventGroup)
     {
         this.EventName = eventName;
         this.EventDate = eventDate;
@@ -24,6 +24,6 @@ public class Event
         this.EventType = eventType;
 
         //Subject to change depending on if we decide to store user profiles, or just userName strings
-        this.EventGroup = new List<string>();
+        this.EventGroup = new List<UserInfo>();
     }
 }

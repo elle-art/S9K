@@ -1,13 +1,15 @@
 namespace backend.models;
 
+using static backend.models.TimeBlock;
 using Google.Cloud.Firestore;
+
 
 [FirestoreData]
 public class Availability
 {
     //An array of integer tuple lists that represent the availability
     //of the given user.
-    //[0-6] = [Monday-Sunday]
+    //[0-6] = [Sunday-Saturday]
     [FirestoreProperty]
 
     public required List<TimeBlock>[] weeklySchedule { get; set; }
@@ -29,36 +31,23 @@ public class Availability
         AddTimeBlock(day, block);
     }
 
-    public bool HasTimeBlock(int day, TimeBlock block)
-{
-    // Ensure the day is valid and the schedule for the day is not null
-    if (day < 0 || day > 6 || weeklySchedule[day] == null)
-        return false;
-
-    // Iterate through the time blocks for the given day
-    foreach (var tb in weeklySchedule[day])
+    private bool HasTimeBlock(int day, TimeBlock block)
     {
-        if (tb.StartTime == block.StartTime && tb.EndTime == block.EndTime)
+        // Ensure the day is valid and the schedule for the day is not null
+        if (day < 0 || day > 6 || weeklySchedule[day] == null)
+            return false;
+
+        // Iterate through the time blocks for the given day
+        foreach (var tb in weeklySchedule[day])
         {
-            return true;
+            if (tb.StartTime == block.StartTime && tb.EndTime == block.EndTime)
+            {
+                return true;
+            }
         }
-    }
 
-    // Return false if no matching time block is found
-    return false;
-}
-
-    private static TimeBlock mergeTimeBlock(TimeBlock initialTimeBlock, TimeBlock compTimeBlock)
-    {
-        TimeBlock mergedTimeBlock = new TimeBlock(initialTimeBlock.StartTime, initialTimeBlock.EndTime);
-
-        if (initialTimeBlock.StartTime > compTimeBlock.StartTime)
-            mergedTimeBlock.StartTime = compTimeBlock.StartTime;
-
-        if (initialTimeBlock.EndTime < compTimeBlock.EndTime)
-            mergedTimeBlock.EndTime = compTimeBlock.EndTime;
-
-        return mergedTimeBlock;
+        // Return false if no matching time block is found
+        return false;
     }
 
     public void AddTimeBlock(int day, TimeBlock blockToAdd)
@@ -133,10 +122,5 @@ public class Availability
                 }
             }
         }
-    }
-
-    private static bool hasConflict(TimeBlock timeBlock1, TimeBlock timeBlock2)
-    {
-        return timeBlock1.StartTime < timeBlock2.EndTime && timeBlock1.EndTime > timeBlock2.StartTime;
     }
 }

@@ -1,5 +1,8 @@
 namespace backend.models;
 
+using System;
+using System.Globalization;
+using static backend.models.TimeBlock;
 using Google.Cloud.Firestore;
 
 public class EventService
@@ -23,8 +26,23 @@ public class EventService
 
     //To-do: Event time generation algorithm algorithm
     //To-do: consideration of preferred times
-    public (DateTime, TimeBlock) GenerateEventTime(ref Availability userAv, ref Calendar userCal, int numMin)
+    public (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
     {
+        DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+        int desiredDayOfTheWeek = (int) desiredDate.DayOfWeek;
+
+        List<TimeBlock> sharedAvailability = new List<TimeBlock>();
+
+        foreach (UserInfo user in curEvent.EventGroup.Cast<UserInfo>())
+        {
+            foreach (TimeBlock tb in user.userAvailability.weeklySchedule[desiredDayOfTheWeek])
+            {
+
+            }
+        }
+
+
+
         return (DateTime.Now, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
     }
 
