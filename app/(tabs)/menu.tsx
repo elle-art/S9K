@@ -1,25 +1,20 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-
-import { HelloWave } from '@/components/HelloWave';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { HelloWave } from '@/components/menu/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useUser } from '@/frontend/utils/user/userProvider';
+import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
 
-export default function HomeScreen() {
+// TO-DO: create indicator for new inbox message
+// TO-DO:  create button components/onPress()
+
+export default function ProfileScreen() {
   const [message, setMessage] = useState('Loading...');
+  const { user } = useUser();
 
-  useEffect(() => {
-    axios.get("http://10.0.2.2:5000/api/test") // ✅ Replace with your API URL
-      .then(response => {
-        setMessage(response.data.message);
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-        setMessage('Failed to load data.');
-      });
-  }, []);
 
   return (
     <ParallaxScrollView
@@ -30,52 +25,72 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome to the S9K!</ThemedText>
+        <ThemedText type="title">@{user?.displayName}</ThemedText>
         <HelloWave />
+        <TouchableOpacity  style={{
+              position: 'absolute',
+              right: -10,
+              top: -3,
+              paddingVertical: 4,
+              paddingHorizontal: 10,
+              backgroundColor: 'blue',
+              borderRadius: 5,
+            }} onPress={() => {/* your handler */ }}>
+          <FontAwesome name="cog" size={24} color={'#fff'} />
+        </TouchableOpacity>
       </ThemedView>
-
-      {/* ✅ Insert the API message here */}
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">API Response:</ThemedText>
-        <ThemedText>{message}</ThemedText>  
+        <ThemedText type="default">"I, {user?.displayName}, will {user?.weeklyGoal}"</ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.titleContainer}>
+          <ThemedText type="subtitle">Availability</ThemedText>
+          <TouchableOpacity
+            onPress={() => {
+              // Your handler here
+              console.log('Edit button pressed');
+            }}
+            style={{
+              position: 'absolute',
+              right: -10,
+              paddingVertical: 2,
+              paddingHorizontal: 10,
+              backgroundColor: 'blue',
+              borderRadius: 5,
+            }}
+          >
+            <ThemedText>Edit</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <AvailabilityGraph />
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="subtitle">Events</ThemedText>
+          <TouchableOpacity
+            onPress={() => {
+              // Your handler here
+              console.log('Edit button pressed');
+            }}
+            style={{
+              position: 'absolute',
+              right: -10,
+              paddingVertical: 2,
+              paddingHorizontal: 10,
+              backgroundColor: 'blue',
+              borderRadius: 5,
+            }}
+          >
+            <ThemedText>View Inbox</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
+        <ThemedText type="defaultSemiBold">Upcoming</ThemedText>
+        <ThemedText type="defaultSemiBold">Previous</ThemedText>
       </ThemedView>
-
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-
     </ParallaxScrollView>
   );
 }

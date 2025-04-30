@@ -10,9 +10,9 @@ public class UserTask
     [FirestoreProperty]
     public DateTime? taskDate { get; set; }
     [FirestoreProperty]
-    public string taskStatus { get; set; }
+    public bool taskStatus { get; set; }
 
-    public UserTask(string taskName, DateTime? taskDate, string taskStatus)
+    public UserTask(string taskName, DateTime? taskDate, bool taskStatus)
     {
         this.taskName = taskName;
 

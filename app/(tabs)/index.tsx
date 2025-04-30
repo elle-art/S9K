@@ -6,8 +6,8 @@ import { SafeAreaView } from 'react-native';
 export default function App() {
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <TimelineCalendarScreen/>
+    <SafeAreaView style={{ flex: 1 }}>
+          <TimelineCalendarScreen />
     </SafeAreaView>
   );
 }

@@ -1,10 +1,10 @@
-// should hold API calls and interfaces for calendar-related objs/funcs
+// Interface for calendar provider used by index.tsx TimelineCalendarScreen component
 import groupBy from 'lodash/groupBy';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
 
-import React, {Component} from 'react';
-import {Alert} from 'react-native';
+import React, { Component } from 'react';
+import { Alert, View } from 'react-native';
 import {
   ExpandableCalendar,
   TimelineEventProps,
@@ -13,61 +13,70 @@ import {
   TimelineProps,
   CalendarUtils
 } from 'react-native-calendars';
+import { getCalendarFromStorage } from '@/frontend/hooks/getCalendar';
+import { Event, EVENT_TYPE_COLORS } from '@/frontend/constants/Calendar';
+import { SafeAreaView, Image, ScrollView } from 'react-native';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+
+interface State {
+  currentDate: string;
+  events: TimelineEventProps[];
+  eventsByDate: { [key: string]: TimelineEventProps[] };
+  marked: { [key: string]: { marked: boolean } };
+}
 
 const getDate = (offset = 0) => {
   const date = new Date();
   date.setDate(date.getDate() + offset);
   return date.toISOString().split('T')[0];
 };
-// ***populate with user events form backend
-const timelineEvents = [
-  {
-    id: '1',
-    start: `${getDate()} 09:00:00`,
-    end: `${getDate()} 10:00:00`,
-    title: 'Meeting with team',
-    color: 'blue'
-  },
-  {
-    id: '2',
-    start: `${getDate(1)} 14:00:00`,
-    end: `${getDate(1)} 15:00:00`,
-    title: 'Project brainstorming',
-    color: 'green'
-  }
-];
 
-const INITIAL_TIME = {hour: 9, minutes: 0};
-const EVENTS: TimelineEventProps[] = timelineEvents;
+const INITIAL_TIME = { hour: 9, minutes: 0 };
 
 // class can be found in react-native docs
 export default class TimelineCalendarScreen extends Component {
-  state = {
+  state: State = {
     currentDate: getDate(),
-    events: EVENTS,
-    eventsByDate: groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)) as {
-      [key: string]: TimelineEventProps[];
-    },
-    marked: { // ***change to mark all dates with an event
-      [`${getDate(-1)}`]: {marked: true},
-      [`${getDate()}`]: {marked: true},
-      [`${getDate(1)}`]: {marked: true},
-      [`${getDate(2)}`]: {marked: true},
-      [`${getDate(4)}`]: {marked: true}
-    }
+    events: [],
+    eventsByDate: {},
+    marked: {}
   };
+
+  async componentDidMount() {
+    const calendar = await getCalendarFromStorage();
+    const EVENTS: TimelineEventProps[] = calendar?.events?.map((event: Event, index: number) => ({
+      id: `${index}`,
+      start: `${event.date} ${event.time.startTime}`,
+      end: `${event.date} ${event.time.endTime}`,
+      title: event.name,
+      color: EVENT_TYPE_COLORS[event.type ?? 'default']
+    })) ?? [];
+    const marked = Object.keys(groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)))
+      .reduce((acc, date) => {
+        acc[date] = { marked: true };
+        return acc;
+      }, {} as State["marked"]);
+
+    this.setState({
+      currentDate: getDate(),
+      events: EVENTS,
+      eventsByDate: groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)),
+      marked: marked
+    });
+  }
 
   onDateChanged = (date: string, source: string) => {
     console.log('TimelineCalendarScreen onDateChanged: ', date, source);
-    this.setState({currentDate: date});
+    this.setState({ currentDate: date });
   };
 
   onMonthChange = (month: any, updateSource: any) => {
     console.log('TimelineCalendarScreen onMonthChange: ', month, updateSource);
   };
+
   // **edit to have popup
   createNewEvent: TimelineProps['onBackgroundLongPress'] = (timeString, timeObject) => {
-    const {eventsByDate} = this.state;
+    const { eventsByDate } = this.state;
     const hourString = `${(timeObject.hour + 1).toString().padStart(2, '0')}`;
     const minutesString = `${timeObject.minutes.toString().padStart(2, '0')}`;
 
@@ -82,16 +91,17 @@ export default class TimelineCalendarScreen extends Component {
     if (timeObject.date) {
       if (eventsByDate[timeObject.date]) {
         eventsByDate[timeObject.date] = [...eventsByDate[timeObject.date], newEvent];
-        this.setState({eventsByDate});
+        this.setState({ eventsByDate });
       } else {
         eventsByDate[timeObject.date] = [newEvent];
-        this.setState({eventsByDate: {...eventsByDate}});
+        this.setState({ eventsByDate: { ...eventsByDate } });
       }
     }
   };
+
   // ***edit to have popup
   approveNewEvent: TimelineProps['onBackgroundLongPressOut'] = (_timeString, timeObject) => {
-    const {eventsByDate} = this.state;
+    const { eventsByDate } = this.state;
 
     Alert.prompt('New Event', 'Enter event title', [
       {
@@ -110,7 +120,7 @@ export default class TimelineCalendarScreen extends Component {
         text: 'Create',
         onPress: eventTitle => {
           if (timeObject.date) {
-            const draftEvent = find(eventsByDate[timeObject.date], {id: 'draft'});
+            const draftEvent = find(eventsByDate[timeObject.date], { id: 'draft' });
             if (draftEvent) {
               draftEvent.id = undefined;
               draftEvent.title = eventTitle ?? 'New Event';
@@ -131,34 +141,39 @@ export default class TimelineCalendarScreen extends Component {
     format24h: true,
     onBackgroundLongPress: this.createNewEvent,
     onBackgroundLongPressOut: this.approveNewEvent,
-    unavailableHours: [{start: 0, end: 6}, {start: 22, end: 24}],
+    unavailableHours: [{ start: 0, end: 6 }, { start: 22, end: 24 }],
     overlapEventsSpacing: 8,
     rightEdgeSpacing: 24
   };
 
   render() {
-    const {currentDate, eventsByDate} = this.state;
+    const { currentDate, eventsByDate } = this.state;
 
     return (
       <CalendarProvider
         date={currentDate}
         onDateChanged={this.onDateChanged}
         onMonthChange={this.onMonthChange}
-        showTodayButton
-        todayButtonStyle={{marginBottom: 25}}
         disabledOpacity={0.6}
       >
-        <ExpandableCalendar
-          firstDay={1}
-          markedDates={this.state.marked}
-        />
-        <TimelineList
-          events={eventsByDate}
-          timelineProps={this.timelineProps}
-          showNowIndicator
-          scrollToNow
-          initialTime={INITIAL_TIME}
-        />
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} nestedScrollEnabled={true}>
+          <Image
+            source={require('@/frontend/assets/images/partial-react-logo.png')}
+            style={{ width: '100%', height: 200 }}
+          />
+          <ExpandableCalendar
+            firstDay={1}
+            markedDates={this.state.marked}
+            scrollEnabled
+          />
+          <TimelineList
+            events={eventsByDate}
+            timelineProps={this.timelineProps}
+            showNowIndicator
+            scrollToNow
+            initialTime={INITIAL_TIME}
+          />
+        </ScrollView>
       </CalendarProvider>
     );
   }

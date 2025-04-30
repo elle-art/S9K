@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
+import { Platform, StyleSheet, TextInput } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -9,12 +9,11 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const user = false; // ****add logic to see if user account exists
+  const user = true; // ****add logic to see if user account exists
 
   const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
 
