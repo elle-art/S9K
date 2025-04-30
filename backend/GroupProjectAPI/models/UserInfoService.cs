@@ -6,8 +6,8 @@ public class UserInfoServices
 {
     public async Task<UserInfo> createUserInfo(UserInfo u)
     {
-        FirebaseCommunications db = new FirebaseCommunications();
-        DocumentReference docRef = db.Collection("users").Document(u.displayName); // needs FBComm class impl, but the collection does exist in FB project console
+        //FirebaseCommunications db = new FirebaseCommunications();
+        //DocumentReference docRef = db.Collection("users").Document(u.displayName); // needs FBComm class impl, but the collection does exist in FB project console
         UserInfo user = new UserInfo
         {
             displayName = u.displayName,
@@ -17,7 +17,7 @@ public class UserInfoServices
             inviteInbox = u.inviteInbox,
             weeklyGoal = u.weeklyGoal,
         };
-        await docRef.SetAsync(user);
+        //await docRef.SetAsync(user);
 
         return user;
     }
@@ -30,20 +30,20 @@ public class UserInfoServices
     // Dependent on FBComm impl
     public void saveUser(ref UserInfo curUser)
     {
-        FirebaseCommunications dbTrans = new FirebaseCommunications();
-        dbTrans.save(curUser);
+        //FirebaseCommunications dbTrans = new FirebaseCommunications();
+        //dbTrans.save(curUser);
     }
 
     public void updateUser(ref UserInfo curUser)
     {
-        FirebaseCommunications dbTrans = new FirebaseCommunications();
-        dbTrans.update(curUser);
+        //FirebaseCommunications dbTrans = new FirebaseCommunications();
+        //dbTrans.update(curUser);
     }
 
     public void getUserInfo(ref UserInfo curUser)
     {// might change to getUserByID?
-        FirebaseCommunications dbTrans = new FirebaseCommunications();
-        dbTrans.get(curUser);
+        //FirebaseCommunications dbTrans = new FirebaseCommunications();
+        //dbTrans.get(curUser);
     }
 
     public Availability getUserAvailability(ref UserInfo curUser)

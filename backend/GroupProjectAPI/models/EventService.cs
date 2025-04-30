@@ -13,37 +13,96 @@ public class EventService
     //To-Do: Determine where event addition to calendar is performed - separate function from create
     //To-Do: Event invite sending (when applicable) on event creation
 
-    public async Task<Event> CreateEvent(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<string> group)
+    public async Task<Event> CreateEvent(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<UserInfo> group)
     {
-        FirebaseCommunications db = new FirebaseCommunications();
-        DocumentReference docRef = db.Collection("events").Document(eventName); // check collection name in FB
+        //FirebaseCommunications db = new FirebaseCommunications();
+        //DocumentReference docRef = db.Collection("events").Document(eventName); // check collection name in FB
         Event newEvent = new Event(eventName, eventDate, eventTimeBlock, eventType, group);
 
-        await docRef.SetAsync(newEvent);
+        //await docRef.SetAsync(newEvent);
 
         return newEvent;
     }
 
-    //To-do: Event time generation algorithm algorithm
+    //To-do: Event time generation algorithm
     //To-do: consideration of preferred times
     public (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
     {
-        DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-        int desiredDayOfTheWeek = (int) desiredDate.DayOfWeek;
-
-        List<TimeBlock> sharedAvailability = new List<TimeBlock>();
-
-        foreach (UserInfo user in curEvent.EventGroup.Cast<UserInfo>())
+        if (curEvent.EventGroup == null || !curEvent.EventGroup.Any())
         {
-            foreach (TimeBlock tb in user.userAvailability.weeklySchedule[desiredDayOfTheWeek])
-            {
+            return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+        }
 
+        int desiredDayOfWeek = (int)desiredDate.DayOfWeek;
+        var requiredDuration = TimeSpan.FromMinutes(numMin);
+
+        // Get all users' availability blocks for the desired day
+        var allUserAvailabilities = curEvent.EventGroup
+            .Select(user => user.userAvailability.weeklySchedule[desiredDayOfWeek])
+            .ToList();
+
+        // Find all possible overlapping time blocks
+        var sharedAvailability = FindOverlappingTimeBlocks(allUserAvailabilities);
+
+        // Find the first available time block that can accommodate the required duration
+        foreach (var block in sharedAvailability.OrderBy(b => b.StartTime))
+        {
+            var potentialEndTime = TimeOnly.FromTimeSpan(block.StartTime.ToTimeSpan().Add(requiredDuration));
+            if (potentialEndTime <= block.EndTime)
+            {
+                var eventTime = new TimeBlock(block.StartTime, potentialEndTime);
+                // Combine the date and time properly
+                var eventDateTime = desiredDate.Date.Add(eventTime.StartTime.ToTimeSpan());
+                return (eventDateTime, eventTime);
             }
         }
 
+        // If no suitable time block is found, return a default value
+        return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+    }
 
+    private List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
+    {
+        if (!allUserAvailabilities.Any())
+            return new List<TimeBlock>();
 
-        return (DateTime.Now, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+        // Start with the first user's availability
+        var sharedAvailability = new List<TimeBlock>(allUserAvailabilities[0]);
+
+        // For each additional user, find overlapping time blocks
+        foreach (var userAvailability in allUserAvailabilities.Skip(1))
+        {
+            var newSharedAvailability = new List<TimeBlock>();
+
+            foreach (var sharedBlock in sharedAvailability)
+            {
+                foreach (var userBlock in userAvailability)
+                {
+                    if (HasOverlap(sharedBlock, userBlock))
+                    {
+                        var overlap = new TimeBlock(
+                            TimeOnly.FromTimeSpan(TimeSpan.FromTicks(
+                                Math.Max(sharedBlock.StartTime.Ticks, userBlock.StartTime.Ticks))),
+                            TimeOnly.FromTimeSpan(TimeSpan.FromTicks(
+                                Math.Min(sharedBlock.EndTime.Ticks, userBlock.EndTime.Ticks)))
+                        );
+                        newSharedAvailability.Add(overlap);
+                    }
+                }
+            }
+
+            sharedAvailability = newSharedAvailability;
+
+            if (!sharedAvailability.Any())
+                break;
+        }
+
+        return sharedAvailability;
+    }
+
+    private bool HasOverlap(TimeBlock block1, TimeBlock block2)
+    {
+        return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
     }
 
     //To-do: finish Calendar implementation to test editing of events
@@ -73,10 +132,10 @@ public class EventService
 
     public void AddUserToGroup(ref Event curEvent, string userName)
     {
-        curEvent.EventGroup.Add(userName);
+        // Add user to group bases on their user name
     }
 
-    public void RemoveUserFromGroup(ref Event curEvent, string user)
+    public void RemoveUserFromGroup(ref Event curEvent, UserInfo user)
     {
         //Assumption made is that we know the user is in the group, so we don't need to check the list first
         curEvent.EventGroup.Remove(user);

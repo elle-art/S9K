@@ -24,6 +24,6 @@ public class Event
         this.EventType = eventType;
 
         //Subject to change depending on if we decide to store user profiles, or just userName strings
-        this.EventGroup = new List<UserInfo>();
+        this.EventGroup = eventGroup;
     }
 }
