@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, StyleSheet, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -9,15 +9,31 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { hasUsername as checkUsernameExists } from '@/backend/firebase/userHelper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const user = true; // ****add logic to see if user account exists
+  const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
+  const [name, onChangeName] = useState(''); // TO-DO: add logic to create user account after input in onChangeName function
 
-  const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
+  useEffect(() => {
+    const checkUser = async () => {
+      const result = await checkUsernameExists();
+      setHasUsername(result);
+    };
 
-  if (!user) {
+    checkUser();
+  }, []);
+
+  if (hasUsername === null) {
+    // Optional: add a loading spinner here
+    return null;
+  }
+
+  const user = false; // use for dev testing
+
+  if (!hasUsername) {
     return (
       <ThemedView style={{ width: "100%", height: "100%" }}>
         <ThemedView style={styles.titleContainer}>
@@ -47,7 +63,6 @@ export default function TabLayout() {
           tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {
-              // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
             },
             default: {},
