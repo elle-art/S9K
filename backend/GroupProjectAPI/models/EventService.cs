@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using static backend.models.TimeBlock;
 using Google.Cloud.Firestore;
+using Backend.Services;
 
 public class EventService
 {
@@ -13,13 +14,28 @@ public class EventService
     //To-Do: Determine where event addition to calendar is performed - separate function from create
     //To-Do: Event invite sending (when applicable) on event creation
 
-    public async Task<Event> CreateEvent(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<UserInfo> group)
+    /// <summary>
+    /// Creates a new event and saves it to firebase
+    /// </summary>
+    /// <param name="uid">user id</param>
+    /// <param name="eventName">name of the event</param>
+    /// <param name="eventDate">date of the event</param>
+    /// <param name="eventTimeBlock">time block of the event</param>
+    /// <param name="eventType">the type of event</param>
+    /// <param name="group">the group of people in the event</param>
+    /// <returns></returns>
+    public static async Task<Event> CreateEventAsync(
+        string uid, 
+        string eventName, 
+        DateTime eventDate, 
+        TimeBlock eventTimeBlock, 
+        string eventType, 
+        List<UserInfo> group) 
     {
-        //FirebaseCommunications db = new FirebaseCommunications();
-        //DocumentReference docRef = db.Collection("events").Document(eventName); // check collection name in FB
+
         Event newEvent = new Event(eventName, eventDate, eventTimeBlock, eventType, group);
 
-        //await docRef.SetAsync(newEvent);
+        await CalendarService.AddEventToCalendar(uid, newEvent);
 
         return newEvent;
     }
@@ -120,8 +136,6 @@ public class EventService
 
         if (type != null)
             eventTBE.EventType = type;
-
-
     }
 
     //To-Do: search for user logic()

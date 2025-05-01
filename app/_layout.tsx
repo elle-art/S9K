@@ -5,9 +5,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
-import { initializeUser } from '@/backend/firebase/initializeUser'; 
-import {app} from '@/firebaseConfig';
+import { initializeUser } from '@/frontend/firebase/initializeUser';
+import { app } from '@/firebaseConfig';
 import { useColorScheme } from '@/frontend/hooks/useColorScheme';
+import { UserProvider } from '@/frontend/utils/user/userProvider';
+import { firebaseDataDoc, saveDataToStorage } from '@/frontend/firebase/initializeData';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,19 +23,33 @@ export default function RootLayout() {
   const [userReady, setUserReady] = useState(false);
 
   useEffect(() => {
-    console.log("⚙️ Firebase App Initialized:", app);
+    console.log("Firebase App Initialized:", app);
 
     const initUser = async () => {
       try {
         const uid = await initializeUser();
-        console.log("✅ User signed in with UID:", uid);
+        console.log("User signed in with UID:", uid);
         setUserReady(true);
+        
       } catch (error) {
-        console.error("❌ Error initializing user:", error);
+        console.error("Error initializing user:", error);
       }
     };
 
     initUser();
+  }, []);
+
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        await saveDataToStorage(firebaseDataDoc);
+        console.log('Initial data saved to AsyncStorage.');
+      } catch (error) {
+        console.error('Error during initialization:', error);
+      }
+    };
+
+    initializeData();
   }, []);
 
   useEffect(() => {
@@ -47,12 +63,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <UserProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </UserProvider>
   );
 }
