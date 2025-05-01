@@ -6,13 +6,17 @@ using Google.Cloud.Firestore;
 public class EventInvite
 {
     [FirestoreProperty]
-    private string message { get; set; }
+    public string Message { get; set; }
     [FirestoreProperty]
-    private Event preConstructedEvent { get; set; }
+    public Event PreConstructedEvent { get; set; }
 
+    public EventInvite () {
+        Message = "";
+        PreConstructedEvent = new Event();
+    }
     public EventInvite(Event preConstructedEvent, string message = "")
     {
-        this.message = message;
-        this.preConstructedEvent = preConstructedEvent;
+        this.Message = message;
+        this.PreConstructedEvent = preConstructedEvent;
     }
 }

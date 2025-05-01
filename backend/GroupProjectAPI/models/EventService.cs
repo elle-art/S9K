@@ -54,7 +54,7 @@ public class EventService
 
         // Get all users' availability blocks for the desired day
         var allUserAvailabilities = curEvent.EventGroup
-            .Select(user => user.userAvailability.weeklySchedule[desiredDayOfWeek])
+            .Select(user => user.UserAvailability.weeklySchedule[desiredDayOfWeek])
             .ToList();
 
         // Find all possible overlapping time blocks

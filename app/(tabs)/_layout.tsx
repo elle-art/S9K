@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
+import { Platform, StyleSheet, SafeAreaView, TextInput, Button } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -9,7 +9,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { hasUsername as checkUsernameExists } from '@/frontend/firebase/userHelper';
+import { hasUsername as checkUsernameExists } from '@/frontend/firebase-api/userHelper';
+import { testSaveUserData } from '@/frontend/firebase-api/initializeData';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -33,7 +34,7 @@ export default function TabLayout() {
 
   const user = true; // use for dev testing
 
-  if (!user) {
+  if (!hasUsername) {
     return (
       <ThemedView style={{ width: "100%", height: "100%" }}>
         <ThemedView style={styles.titleContainer}>
@@ -51,6 +52,18 @@ export default function TabLayout() {
             keyboardType="ascii-capable"
           />
         </ThemedView>
+
+         {/* Button to trigger the API save function after name input */}
+         <Button
+          title="Create Account"
+          onPress={() => {
+            if (name) {
+              testSaveUserData(name); // Pass entered name (uid) to save data
+            } else {
+              alert('Please enter a valid name');
+            }
+          }}
+        />
       </ThemedView>
     );
   } else {
@@ -99,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 8,
-    marginTop: 260,
+    marginTop: 180,
   },
   inputContainer: {
     gap: 8,

@@ -1,5 +1,6 @@
 using Backend.Models;
 using Google.Cloud.Firestore;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace Backend.Services {
@@ -20,6 +21,9 @@ public static class FirebaseCommunications
     /// <returns></returns>
     public static async Task SaveToFirestore<T>(T obj, string uid, string className, string documentName="primary")
     {
+        Console.WriteLine(JsonConvert.SerializeObject(obj));
+Console.WriteLine("IN SAVE TO FS");
+
         DocumentReference docRef = db
             .Collection("users")
             .Document(uid)
@@ -31,7 +35,7 @@ public static class FirebaseCommunications
 
 
     /// <summary>
-    /// Loads an object from firestore
+    /// Loads an object from Firestore
     /// </summary>
     /// <typeparam name="T">object to be loaded</typeparam>
     /// <param name="uid">the user's id</param>

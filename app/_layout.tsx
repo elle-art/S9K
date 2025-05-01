@@ -5,11 +5,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
-import { initializeUser } from '@/frontend/firebase/initializeUser';
+import { initializeUser } from '@/frontend/firebase-api/initializeUser';
 import { app } from '@/firebaseConfig';
 import { useColorScheme } from '@/frontend/hooks/useColorScheme';
 import { UserProvider } from '@/frontend/utils/user/userProvider';
-import { firebaseDataDoc, saveDataToStorage } from '@/frontend/firebase/initializeData';
+import { firebaseDataDoc, saveDataToStorage } from '@/frontend/firebase-api/initializeData';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

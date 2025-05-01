@@ -16,6 +16,11 @@ public class Event
     [FirestoreProperty]
     public List<UserInfo> EventGroup { get; set; }
 
+    public Event() {
+        EventName = "";
+        EventGroup = [];
+    }
+
     public Event(string eventName, DateTime eventDate, TimeBlock eventTimeBlock, string eventType, List<UserInfo> eventGroup)
     {
         this.EventName = eventName;

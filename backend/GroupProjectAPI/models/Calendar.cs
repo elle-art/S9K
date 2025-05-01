@@ -10,4 +10,8 @@ public class Calendar {
     public Calendar() {
         events = new List<Event>();
     }
+
+    public Calendar(List<Event> userEvents) {
+        events = userEvents;
+    }
 }

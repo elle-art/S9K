@@ -9,19 +9,11 @@ public class UserInfoServices
     /// </summary>
     /// <param name="u"></param>
     /// <returns></returns>
-    public static async Task<UserInfo> CreateUserInfo(UserInfo u)
+    public static async Task<UserInfo> CreateUserInfo(string name, Availability availability, List<UserTask> tasks, List<TimeBlock> preferred, List<EventInvite> invites, Calendar calendar = null, string goal = "schedule more!")
     {
-        UserInfo user = new UserInfo
-        {
-            displayName = u.displayName,
-            userAvailability = u.userAvailability,
-            taskList = u.taskList,
-            preferredTimes = u.preferredTimes,
-            inviteInbox = u.inviteInbox,
-            weeklyGoal = u.weeklyGoal,
-        };
+        UserInfo user = new UserInfo(name, availability, tasks, preferred, invites, calendar, goal);
 
-        await DBCommunications.SaveObjectAsync(u.displayName, user);
+        await DBCommunications.SaveObjectAsync(name, user);
 
         return user;
     }
@@ -38,7 +30,7 @@ public class UserInfoServices
     /// <returns></returns>
     public static async void UpdateUserInfo(UserInfo curUser)
     {
-        await DBCommunications.SaveObjectAsync(curUser.displayName, curUser);
+        await DBCommunications.SaveObjectAsync(curUser.DisplayName, curUser);
     }
 
     /// <summary>
