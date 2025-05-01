@@ -12,7 +12,7 @@ public class Availability
     //[0-6] = [Sunday-Saturday]
     [FirestoreProperty]
 
-    public required List<TimeBlock>[] weeklySchedule { get; set; }
+    public List<TimeBlock>[] weeklySchedule { get; set; }
 
     public Availability()
     {
@@ -31,7 +31,7 @@ public class Availability
         AddTimeBlock(day, block);
     }
 
-    private bool HasTimeBlock(int day, TimeBlock block)
+    public bool HasTimeBlock(int day, TimeBlock block)
     {
         // Ensure the day is valid and the schedule for the day is not null
         if (day < 0 || day > 6 || weeklySchedule[day] == null)
@@ -59,10 +59,10 @@ public class Availability
 
         for (int i = 0; i < weeklySchedule[day].Count; i++)
         {
-            if (hasConflict(weeklySchedule[day][i], blockToAdd))
+            if (TimeBlock.hasConflict(weeklySchedule[day][i], blockToAdd))
             {
                 // Merge the conflicting time blocks
-                weeklySchedule[day][i] = mergeTimeBlock(weeklySchedule[day][i], blockToAdd);
+                weeklySchedule[day][i] = TimeBlock.mergeTimeBlock(weeklySchedule[day][i], blockToAdd);
                 merged = true;
                 break;
             }
@@ -83,7 +83,7 @@ public class Availability
             var currentBlock = weeklySchedule[day][i];
 
             // Check if the blockToDelete overlaps with the current block
-            if (hasConflict(currentBlock, blockToDelete))
+            if (TimeBlock.hasConflict(currentBlock, blockToDelete))
             {
                 // Case 1: blockToDelete fully overlaps the current block
                 if (blockToDelete.StartTime <= currentBlock.StartTime && blockToDelete.EndTime >= currentBlock.EndTime)

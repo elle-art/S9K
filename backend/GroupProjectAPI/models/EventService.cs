@@ -40,24 +40,85 @@ public class EventService
         return newEvent;
     }
 
-    //To-do: Event time generation algorithm algorithm
+    //To-do: Event time generation algorithm
     //To-do: consideration of preferred times
     public (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
     {
-        DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-        int desiredDayOfTheWeek = (int) desiredDate.DayOfWeek;
-
-        List<TimeBlock> sharedAvailability = new List<TimeBlock>();
-
-        foreach (UserInfo user in curEvent.EventGroup.Cast<UserInfo>())
+        if (curEvent.EventGroup == null || !curEvent.EventGroup.Any())
         {
-            foreach (TimeBlock tb in user.userAvailability.weeklySchedule[desiredDayOfTheWeek])
-            {
+            return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+        }
 
+        int desiredDayOfWeek = (int)desiredDate.DayOfWeek;
+        var requiredDuration = TimeSpan.FromMinutes(numMin);
+
+        // Get all users' availability blocks for the desired day
+        var allUserAvailabilities = curEvent.EventGroup
+            .Select(user => user.userAvailability.weeklySchedule[desiredDayOfWeek])
+            .ToList();
+
+        // Find all possible overlapping time blocks
+        var sharedAvailability = FindOverlappingTimeBlocks(allUserAvailabilities);
+
+        // Find the first available time block that can accommodate the required duration
+        foreach (var block in sharedAvailability.OrderBy(b => b.StartTime))
+        {
+            var potentialEndTime = TimeOnly.FromTimeSpan(block.StartTime.ToTimeSpan().Add(requiredDuration));
+            if (potentialEndTime <= block.EndTime)
+            {
+                var eventTime = new TimeBlock(block.StartTime, potentialEndTime);
+                // Combine the date and time properly
+                var eventDateTime = desiredDate.Date.Add(eventTime.StartTime.ToTimeSpan());
+                return (eventDateTime, eventTime);
             }
         }
 
-        return (DateTime.Now, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+        // If no suitable time block is found, return a default value
+        return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
+    }
+
+    private List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
+    {
+        if (!allUserAvailabilities.Any())
+            return new List<TimeBlock>();
+
+        // Start with the first user's availability
+        var sharedAvailability = new List<TimeBlock>(allUserAvailabilities[0]);
+
+        // For each additional user, find overlapping time blocks
+        foreach (var userAvailability in allUserAvailabilities.Skip(1))
+        {
+            var newSharedAvailability = new List<TimeBlock>();
+
+            foreach (var sharedBlock in sharedAvailability)
+            {
+                foreach (var userBlock in userAvailability)
+                {
+                    if (HasOverlap(sharedBlock, userBlock))
+                    {
+                        var overlap = new TimeBlock(
+                            TimeOnly.FromTimeSpan(TimeSpan.FromTicks(
+                                Math.Max(sharedBlock.StartTime.Ticks, userBlock.StartTime.Ticks))),
+                            TimeOnly.FromTimeSpan(TimeSpan.FromTicks(
+                                Math.Min(sharedBlock.EndTime.Ticks, userBlock.EndTime.Ticks)))
+                        );
+                        newSharedAvailability.Add(overlap);
+                    }
+                }
+            }
+
+            sharedAvailability = newSharedAvailability;
+
+            if (!sharedAvailability.Any())
+                break;
+        }
+
+        return sharedAvailability;
+    }
+
+    private bool HasOverlap(TimeBlock block1, TimeBlock block2)
+    {
+        return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
     }
 
     //To-do: finish Calendar implementation to test editing of events

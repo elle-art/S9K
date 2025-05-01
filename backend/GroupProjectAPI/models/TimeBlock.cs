@@ -38,4 +38,43 @@ public struct TimeBlock
     {
         return timeBlock1.StartTime < timeBlock2.EndTime && timeBlock1.EndTime > timeBlock2.StartTime;
     }
+
+    public static List<TimeBlock> MergeOverlappingBlocks(List<TimeBlock> timeBlocks)
+    {
+        if (!timeBlocks.Any()) return timeBlocks;
+
+        var sortedBlocks = timeBlocks.OrderBy(b => b.StartTime).ToList();
+        var mergedBlocks = new List<TimeBlock>();
+        var currentBlock = sortedBlocks[0];
+
+        for (int i = 1; i < sortedBlocks.Count; i++)
+        {
+            if (TimeBlock.hasConflict(currentBlock, sortedBlocks[i]))
+            {
+                currentBlock = TimeBlock.mergeTimeBlock(currentBlock, sortedBlocks[i]);
+            }
+            else
+            {
+                mergedBlocks.Add(currentBlock);
+                currentBlock = sortedBlocks[i];
+            }
+        }
+
+        mergedBlocks.Add(currentBlock);
+        return mergedBlocks;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is TimeBlock other)
+        {
+            return this.StartTime == other.StartTime && this.EndTime == other.EndTime;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(StartTime, EndTime);
+    }
 }
