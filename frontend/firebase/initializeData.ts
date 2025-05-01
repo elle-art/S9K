@@ -55,6 +55,8 @@ export const firebaseDataDoc = {
     ]
 };
 
+
+// TO-DO: add real firebase data
 export async function saveDataToStorage(firebaseDataDoc: any) {
     const user = {
         displayName: firebaseDataDoc.displayName,

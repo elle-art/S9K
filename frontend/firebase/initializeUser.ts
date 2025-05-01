@@ -2,6 +2,7 @@ import { signInAnonymously } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { saveUid, getStoredUid } from "./storageHelper";
 import { auth, db } from "@/firebaseConfig"; // use the initialized instances
+import { saveDataToStorage } from "./initializeData";
 
 export const initializeUser = async () => {
   const storedUid = await getStoredUid();
@@ -12,6 +13,7 @@ export const initializeUser = async () => {
 
     if (userSnap.exists()) {
       console.log("Returning user. Using stored UID:", storedUid);
+      await saveDataToStorage(userSnap.data()); // saves relevant frontend data to async storage
       return storedUid;
     } else {
       console.log("Stored UID has no matching Firestore doc. Signing in again...");

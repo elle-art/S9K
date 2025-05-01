@@ -9,7 +9,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { hasUsername as checkUsernameExists } from '@/backend/firebase/userHelper';
+import { hasUsername as checkUsernameExists } from '@/frontend/firebase/userHelper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,9 +31,9 @@ export default function TabLayout() {
     return null;
   }
 
-  const user = false; // use for dev testing
+  const user = true; // use for dev testing
 
-  if (!hasUsername) {
+  if (!user) {
     return (
       <ThemedView style={{ width: "100%", height: "100%" }}>
         <ThemedView style={styles.titleContainer}>

@@ -1,6 +1,4 @@
 namespace backend.models;
-
-using Google.Cloud.Firestore;
 using Backend.Services;
 public class AvailabilityService
 {

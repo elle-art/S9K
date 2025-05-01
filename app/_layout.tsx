@@ -31,25 +31,13 @@ export default function RootLayout() {
         console.log("User signed in with UID:", uid);
         setUserReady(true);
         
+        await saveDataToStorage(firebaseDataDoc);
       } catch (error) {
         console.error("Error initializing user:", error);
       }
     };
 
     initUser();
-  }, []);
-
-  useEffect(() => {
-    const initializeData = async () => {
-      try {
-        await saveDataToStorage(firebaseDataDoc);
-        console.log('Initial data saved to AsyncStorage.');
-      } catch (error) {
-        console.error('Error during initialization:', error);
-      }
-    };
-
-    initializeData();
   }, []);
 
   useEffect(() => {
