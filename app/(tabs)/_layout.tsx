@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Platform, StyleSheet, TextInput, Button } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -9,16 +9,28 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { hasUsername as checkUsernameExists } from '@/frontend/firebase-api/userHelper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
+  const [name, onChangeName] = useState(''); 
 
-  const user = false; // ****add logic to see if user account exists
+  useEffect(() => {
+    const checkUser = async () => {
+      const result = await checkUsernameExists();
+      setHasUsername(result);
+    };
 
-  const [name, onChangeName] = React.useState(''); // ***add logic to create user account after input in onChangeName function
+    checkUser();
+  }, []);
 
-  if (!user) {
+  if (hasUsername === null) {
+    // Optional: add a loading spinner here
+    return null;
+  }
+
+  if (!hasUsername) {
     return (
       <ThemedView style={{ width: "100%", height: "100%" }}>
         <ThemedView style={styles.titleContainer}>
@@ -36,6 +48,17 @@ export default function TabLayout() {
             keyboardType="ascii-capable"
           />
         </ThemedView>
+         <Button
+          title="Create Account"
+          onPress={async () => {
+            if (name) {
+              const result = await checkUsernameExists(); // re-check username state
+              setHasUsername(result);
+            } else {
+              alert('Please enter a valid name');
+            }
+          }}
+        />
       </ThemedView>
     );
   } else {
@@ -48,7 +71,6 @@ export default function TabLayout() {
           tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {
-              // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
             },
             default: {},
@@ -85,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 8,
-    marginTop: 260,
+    marginTop: 180,
   },
   inputContainer: {
     gap: 8,

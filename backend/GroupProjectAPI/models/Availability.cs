@@ -1,13 +1,26 @@
+namespace backend.models;
+using Google.Cloud.Firestore;
+
+
+[FirestoreData]
 public class Availability
 {
     //An array of integer tuple lists that represent the availability
     //of the given user.
-    //[0-6] = [Monday-Sunday]
-    private List<TimeBlock>[] weeklySchedule { get; set; }
+    //[0-6] = [Sunday-Saturday]
+    [FirestoreProperty]
+
+    public List<TimeBlock>[] weeklySchedule { get; set; }
 
     public Availability()
     {
         weeklySchedule = new List<TimeBlock>[7];
+    }
+
+
+    public Availability(List<TimeBlock>[] list)
+    {
+        weeklySchedule = list;
     }
 
     public void EditAvailability(int day, TimeBlock block, bool isDelete = false)
@@ -22,20 +35,26 @@ public class Availability
         AddTimeBlock(day, block);
     }
 
-    private static TimeBlock mergeTimeBlock(TimeBlock initialTimeBlock, TimeBlock compTimeBlock)
+    public bool HasTimeBlock(int day, TimeBlock block)
     {
-        TimeBlock mergedTimeBlock = new TimeBlock(initialTimeBlock.StartTime, initialTimeBlock.EndTime);
+        // Ensure the day is valid and the schedule for the day is not null
+        if (day < 0 || day > 6 || weeklySchedule[day] == null)
+            return false;
 
-        if (initialTimeBlock.StartTime > compTimeBlock.StartTime)
-            mergedTimeBlock.StartTime = compTimeBlock.StartTime;
+        // Iterate through the time blocks for the given day
+        foreach (var tb in weeklySchedule[day])
+        {
+            if (tb.StartTime == block.StartTime && tb.EndTime == block.EndTime)
+            {
+                return true;
+            }
+        }
 
-        if (initialTimeBlock.EndTime < compTimeBlock.EndTime)
-            mergedTimeBlock.EndTime = compTimeBlock.EndTime;
-
-        return mergedTimeBlock;
+        // Return false if no matching time block is found
+        return false;
     }
 
-    private void AddTimeBlock(int day, TimeBlock blockToAdd)
+    public void AddTimeBlock(int day, TimeBlock blockToAdd)
     {
         if (weeklySchedule[day] == null)
             weeklySchedule[day] = new List<TimeBlock>();
@@ -44,10 +63,10 @@ public class Availability
 
         for (int i = 0; i < weeklySchedule[day].Count; i++)
         {
-            if (hasConflict(weeklySchedule[day][i], blockToAdd))
+            if (TimeBlock.hasConflict(weeklySchedule[day][i], blockToAdd))
             {
                 // Merge the conflicting time blocks
-                weeklySchedule[day][i] = mergeTimeBlock(weeklySchedule[day][i], blockToAdd);
+                weeklySchedule[day][i] = TimeBlock.mergeTimeBlock(weeklySchedule[day][i], blockToAdd);
                 merged = true;
                 break;
             }
@@ -68,7 +87,7 @@ public class Availability
             var currentBlock = weeklySchedule[day][i];
 
             // Check if the blockToDelete overlaps with the current block
-            if (hasConflict(currentBlock, blockToDelete))
+            if (TimeBlock.hasConflict(currentBlock, blockToDelete))
             {
                 // Case 1: blockToDelete fully overlaps the current block
                 if (blockToDelete.StartTime <= currentBlock.StartTime && blockToDelete.EndTime >= currentBlock.EndTime)
@@ -107,10 +126,5 @@ public class Availability
                 }
             }
         }
-    }
-
-    private static bool hasConflict(TimeBlock timeBlock1, TimeBlock timeBlock2)
-    {
-        return timeBlock1.StartTime < timeBlock2.EndTime && timeBlock1.EndTime > timeBlock2.StartTime;
     }
 }
