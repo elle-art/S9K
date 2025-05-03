@@ -45,3 +45,6 @@ obj/
 *.pdb
 *.cache
 *.sourcelink.json
+
+# ignore the firebase private key
+/backend/GroupProjectAPI/firebase
