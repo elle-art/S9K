@@ -1,4 +1,5 @@
 // Interface for calendar provider used by index.tsx TimelineCalendarScreen component
+
 import groupBy from 'lodash/groupBy';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
@@ -17,6 +18,13 @@ import { getCalendarFromStorage } from '@/frontend/hooks/getCalendar';
 import { Event, EVENT_TYPE_COLORS } from '@/frontend/constants/Calendar';
 import { SafeAreaView, Image, ScrollView } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { getEventsFromPhoneCalendar } from '@/frontend/hooks/getEventsFromFile';
+import CalendarLogger from './frontend/hooks/calendarDataRetriever';
+//import { getEventsFromPhoneCalendar } from '@/frontend/hooks/getEventsFromFile';
+import { useEffect } from 'react';
+import { retrieveAndStoreCalendarEvents } from '@/frontend/hooks/calendarDataRetriever';
+import * as FileSystem from 'expo-file-system';
+
 
 interface State {
   currentDate: string;
@@ -43,27 +51,52 @@ export default class TimelineCalendarScreen extends Component {
   };
 
   async componentDidMount() {
-    const calendar = await getCalendarFromStorage();
-    const EVENTS: TimelineEventProps[] = calendar?.events?.map((event: Event, index: number) => ({
-      id: `${index}`,
+    retrieveAndStoreCalendarEvents();
+    await retrieveAndStoreCalendarEvents();
+    console.log("yeet");
+    const [storedCalendar, phoneEvents] = await Promise.all([
+      getCalendarFromStorage(),
+      getEventsFromPhoneCalendar()
+    ]);
+
+    const storedEvents: TimelineEventProps[] = storedCalendar?.events?.map((event: Event, index: number) => ({
+      id: `stored-${index}`,
       start: `${event.date} ${event.time.startTime}`,
       end: `${event.date} ${event.time.endTime}`,
       title: event.name,
       color: EVENT_TYPE_COLORS[event.type ?? 'default']
     })) ?? [];
-    const marked = Object.keys(groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)))
-      .reduce((acc, date) => {
-        acc[date] = { marked: true };
-        return acc;
-      }, {} as State["marked"]);
+
+    const deviceEvents: TimelineEventProps[] = phoneEvents.map((event, index) => ({
+      id: `device-${index}`,
+      start: event.startDate,
+      end: event.endDate,
+      title: event.title || 'Untitled',
+      color: '#ADD8E6' // light blue for phone events
+    }));
+
+    const allEvents = [...storedEvents, ...deviceEvents];
+
+    const eventsByDate = groupBy(allEvents, e => CalendarUtils.getCalendarDateString(e.start));
+    const marked = Object.keys(eventsByDate).reduce((acc, date) => {
+      acc[date] = { marked: true };
+      return acc;
+    }, {} as State["marked"]);
 
     this.setState({
       currentDate: getDate(),
-      events: EVENTS,
-      eventsByDate: groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)),
-      marked: marked
+      events: allEvents,
+      eventsByDate,
+      marked
     });
+
+    // Write the combined events to a file after data has been fetched
+    const filePath = FileSystem.documentDirectory + 'events.json';
+    await FileSystem.writeAsStringAsync(filePath, JSON.stringify(allEvents, null, 2));
+    console.log("Events saved to file:", filePath);
   }
+
+
 
   onDateChanged = (date: string, source: string) => {
     console.log('TimelineCalendarScreen onDateChanged: ', date, source);
@@ -178,3 +211,4 @@ export default class TimelineCalendarScreen extends Component {
     );
   }
 }
+
