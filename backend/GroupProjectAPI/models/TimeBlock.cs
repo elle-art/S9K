@@ -1,13 +1,12 @@
 namespace backend.models;
-
 using Google.Cloud.Firestore;
 
 [FirestoreData]
 public struct TimeBlock
 {
-    [FirestoreProperty]
+    [FirestoreProperty(ConverterType = typeof(TimeOnlyConverter))]
     public TimeOnly StartTime { get; set; }
-    [FirestoreProperty]
+    [FirestoreProperty(ConverterType = typeof(TimeOnlyConverter))]
     public TimeOnly EndTime { get; set; }
 
     public TimeBlock(TimeOnly startTime, TimeOnly endTime)
@@ -76,5 +75,21 @@ public struct TimeBlock
     public override int GetHashCode()
     {
         return HashCode.Combine(StartTime, EndTime);
+    }
+}
+
+public class TimeOnlyConverter : IFirestoreConverter<TimeOnly>
+{
+    public TimeOnly FromFirestore(object value)
+    {
+        // Firestore will give us a string like "09:00:00"
+        return TimeOnly.Parse((string)value);
+    }
+
+    public object ToFirestore(TimeOnly time)
+    {
+        // Store it as an ISO-style string
+        Console.WriteLine("IN FIRESTORE CONVERTER");
+        return time.ToString("HH:mm:ss");
     }
 }

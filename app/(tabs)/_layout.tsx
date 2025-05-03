@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, SafeAreaView, TextInput, Button } from 'react-native';
+import { Platform, StyleSheet, TextInput, Button } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -10,13 +10,11 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { hasUsername as checkUsernameExists } from '@/frontend/firebase-api/userHelper';
-import { testSaveUserData } from '@/frontend/firebase-api/initializeData';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
-  const [name, onChangeName] = useState(''); // TO-DO: add logic to create user account after input in onChangeName function
+  const [name, onChangeName] = useState(''); 
 
   useEffect(() => {
     const checkUser = async () => {
@@ -31,8 +29,6 @@ export default function TabLayout() {
     // Optional: add a loading spinner here
     return null;
   }
-
-  const user = true; // use for dev testing
 
   if (!hasUsername) {
     return (
@@ -52,13 +48,12 @@ export default function TabLayout() {
             keyboardType="ascii-capable"
           />
         </ThemedView>
-
-         {/* Button to trigger the API save function after name input */}
          <Button
           title="Create Account"
-          onPress={() => {
+          onPress={async () => {
             if (name) {
-              testSaveUserData(name); // Pass entered name (uid) to save data
+              const result = await checkUsernameExists(); // re-check username state
+              setHasUsername(result);
             } else {
               alert('Please enter a valid name');
             }

@@ -3,7 +3,7 @@ using Google.Cloud.Firestore;
 using Backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://10.135.103.58:5000");
+builder.WebHost.UseUrls("http://10.0.0.202:5000");
 
 // Set Firebase credentials (only once at startup)
 string keyPath = Path.Combine(Directory.GetCurrentDirectory(), "firebase", "firebase-key.json");

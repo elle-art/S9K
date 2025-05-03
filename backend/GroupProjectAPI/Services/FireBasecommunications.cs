@@ -21,63 +21,14 @@ namespace Backend.Services
         /// <returns></returns>
         public static async Task SaveToFirestore<T>(T obj, string uid, string className, string documentName = "primary")
         {
-            Console.WriteLine(JsonConvert.SerializeObject(obj));
-            Console.WriteLine("IN SAVE TO FS");
-
             DocumentReference docRef = db
                 .Collection("users")
                 .Document(uid)
                 .Collection(className)
                 .Document(documentName);
 
-
-
-            // Save the basic fields like DisplayName and WeeklyGoal
-            if (obj is UserInfo userInfo)
-            {
-                await docRef.SetAsync(new
-                {
-                    userInfo.DisplayName,
-                    userInfo.WeeklyGoal
-                });
-                // Save UserAvailability to a subcollection called "UserAvailability"
-                if (userInfo.UserAvailability != null)
-                {
-                    await SaveToFirestore(userInfo.UserAvailability, uid, "UserAvailability", "availability");
-                    await SaveToFirestore(userInfo.UserAvailability.weeklySchedule, uid, "TimeBlock", "time");
-                }
-
-                // Save InviteInbox to a subcollection called "InviteInbox"
-                // if (userInfo.InviteInbox != null)
-                // {
-                //     var inviteCollection = db.Collection("users")
-                //         .Document(uid)
-                //         .Collection("InviteInbox");
-
-                //     foreach (var invite in userInfo.InviteInbox)
-                //     {
-                //         var inviteDocRef = inviteCollection.Document();
-                //         await inviteDocRef.SetAsync(invite);
-                //     }
-                // }
-
-                // If you have other nested objects like TaskList, PreferredTimes, etc., save them in similar fashion
-                // if (userInfo.TaskList != null)
-                // {
-                //     await SaveToFirestore(userInfo.TaskList, uid, "TaskList", "taskList");
-                // }
-
-                // if (userInfo.PreferredTimes != null)
-                // {
-                //     await SaveToFirestore(userInfo.PreferredTimes, uid, "PreferredTimes", "preferredTimes");
-                // }
-            }
-            else
-            {
-                await docRef.SetAsync(obj);
-            }
+            await docRef.SetAsync(obj);
         }
-
 
         /// <summary>
         /// Loads an object from Firestore
@@ -101,46 +52,6 @@ namespace Backend.Services
                 return snapshot.ConvertTo<T>();
             }
             return default;
-        }
-
-
-        /// <summary>
-        /// gets the dummy object from firestore - used for testing purposes
-        /// </summary>
-        /// <param name="uid"> fake user id</param>
-        /// <returns></returns>
-        public static async Task<Dummy> LoadDummyFromFirestore(string uid)
-        {
-            DocumentReference docRef = db
-                .Collection("users")
-                .Document(uid)
-                .Collection("dummy")
-                .Document("primary");
-
-            DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
-            if (snapshot.Exists)
-            {
-                return snapshot.ConvertTo<Dummy>();
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// saves the dummy object to firestore - used for testing purposes
-        /// </summary>
-        /// <param name="uid">fake user id</param>
-        /// <param name="dummy"></param>
-        /// <returns></returns>
-        public static async Task SaveDummyToFirestore(string uid, Dummy dummy)
-        {
-            DocumentReference docRef = db
-                .Collection("users")
-                .Document(uid)
-                .Collection("dummy")
-                .Document("primary");
-
-            await docRef.SetAsync(dummy);
         }
     }
 }

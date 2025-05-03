@@ -4,17 +4,6 @@ namespace Backend.Services
 {
     public class DBCommunications
     {
-
-        public static async Task SaveDummyAsync(string uid, Dummy dummy)
-        {
-            await FirebaseCommunications.SaveDummyToFirestore(uid, dummy);
-        }
-
-        public static async Task<Dummy> GetDummyAsync(string uid)
-        {
-            return await FirebaseCommunications.LoadDummyFromFirestore(uid);
-        }
-
         /// <summary>
         /// saves an object to firebase
         /// </summary>
