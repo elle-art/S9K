@@ -166,11 +166,11 @@ namespace Backend.Controllers
             {
                 DisplayName = displayName,
                 WeeklyGoal = weeklyGoal,
-                UserAvailability = new Availability(),
-                UserCalendar = new Calendar(),
-                TaskList = new List<UserTask>(),
-                PreferredTimes = new List<TimeBlock>(),
-                InviteInbox = new List<EventInvite>()
+                UserAvailability = availability,
+                UserCalendar = userCalendar,
+                TaskList = taskList,
+                PreferredTimes = preferredTimes,
+                InviteInbox = inviteList
             };
         }
     }
