@@ -1,64 +1,85 @@
-﻿namespace UnitTests;
-using Xunit;
+﻿using Xunit;
 using backend.models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class AvailabilityServiceTests
 {
     [Fact]
-    public void CreateAvailability_FBentryDoesNotExist_ReturnTrue()
+    public void EditAvailability_AddTimeBlock_Success()
     {
-        //creating a new availability Service
-        var availabilityService = new AvailabilityService();
-
-        //Should return a new availability object (FBEntryExists being true returns null regardless, at time of writing)
-        var result = availabilityService.CreateAvailability(FBEntryExists: false);
-
-        //Assert that result exists and is of type Availability
-        Assert.NotNull(result);
-        Assert.IsType<Availability>(result);
-    }
-
-    [Fact]
-    public void UpdateAvailability_()
-    {
-        var availabilityService = new AvailabilityService();
-        var userAvailability = new Availability();
-        var timeBlock1 = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("11:00"));
-        var timeBlock2 = new TimeBlock(TimeOnly.Parse("10:00"), TimeOnly.Parse("10:30"));
-        var timeBlock3 = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("10:00"));
-        var timeBlock4 = new TimeBlock(TimeOnly.Parse("10:30"), TimeOnly.Parse("11:00"));
-        int day = 1; // Example: Monday
+        // Arrange
+        var availability = new Availability();
+        var timeBlock = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("10:00"));
 
         // Act
-        availabilityService.UpdateAvailability(ref userAvailability, day, timeBlock1, isDelete: false);
-        availabilityService.UpdateAvailability(ref userAvailability, day, timeBlock2, isDelete: true);
+        availability.EditAvailability(0, timeBlock, false);
 
         // Assert
-        Assert.NotNull(userAvailability);
-        Assert.True(userAvailability.HasTimeBlock(day, timeBlock3));
-        Assert.True(userAvailability.HasTimeBlock(day, timeBlock4));
+        Assert.True(availability.HasTimeBlock(0, timeBlock));
     }
 
     [Fact]
-    public void HasTimeBlock_ReturnsTrue_WhenMatchingBlockExists()
+    public void EditAvailability_DeleteTimeBlock_Success()
     {
-        var schedule = new Availability();
-        var block = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("11:00"));
+        // Arrange
+        var availability = new Availability();
+        var timeBlock = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("10:00"));
+        availability.EditAvailability(0, timeBlock, false);
 
-        schedule.AddTimeBlock(1, block); // method to add a block
-        bool result = schedule.HasTimeBlock(1, block);
+        // Act
+        availability.EditAvailability(0, timeBlock, true);
 
-        Assert.True(result);
+        // Assert
+        Assert.False(availability.HasTimeBlock(0, timeBlock));
     }
 
     [Fact]
-    public void HasConflict_ReturnsTrue_WhenTimeBlocksOverlap()
+    public void EditAvailability_MergeOverlappingBlocks_Success()
     {
-        var block1 = new TimeBlock(TimeOnly.Parse("10:30"), TimeOnly.Parse("11:00"));
-        var block2 = new TimeBlock(TimeOnly.Parse("10:30"), TimeOnly.Parse("11:00"));
+        // Arrange
+        var availability = new Availability();
+        var block1 = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("11:00"));
+        var block2 = new TimeBlock(TimeOnly.Parse("10:00"), TimeOnly.Parse("12:00"));
+        var expectedBlock = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("12:00"));
 
-        var result = Availability.hasConflict(block1, block2);
+        // Act
+        availability.EditAvailability(0, block1, false);
+        availability.EditAvailability(0, block2, false);
 
-        Assert.True(result);
+        // Assert
+        Assert.True(availability.HasTimeBlock(0, expectedBlock));
+    }
+
+    [Fact]
+    public void EditAvailability_DeletePartialBlock_CreatesGap()
+    {
+        // Arrange
+        var availability = new Availability();
+        var initialBlock = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("12:00"));
+        var deleteBlock = new TimeBlock(TimeOnly.Parse("10:00"), TimeOnly.Parse("11:00"));
+        var expectedBlock1 = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("10:00"));
+        var expectedBlock2 = new TimeBlock(TimeOnly.Parse("11:00"), TimeOnly.Parse("12:00"));
+
+        // Act
+        availability.EditAvailability(0, initialBlock, false);
+        availability.EditAvailability(0, deleteBlock, true);
+
+        // Assert
+        Assert.True(availability.HasTimeBlock(0, expectedBlock1));
+        Assert.True(availability.HasTimeBlock(0, expectedBlock2));
+    }
+
+    [Fact]
+    public void EditAvailability_InvalidDayIndex_NoEffect()
+    {
+        // Arrange
+        var availability = new Availability();
+        var timeBlock = new TimeBlock(TimeOnly.Parse("09:00"), TimeOnly.Parse("10:00"));
+
+        // Act & Assert
+        Assert.Throws<IndexOutOfRangeException>(() =>
+            availability.EditAvailability(7, timeBlock, false));
     }
 }

@@ -64,6 +64,50 @@ public struct TimeBlock
         return mergedBlocks;
     }
 
+    public static List<TimeBlock> RemoveTimeBlock(List<TimeBlock> blocks, TimeBlock blockToRemove)
+    {
+        var result = new List<TimeBlock>();
+
+        foreach (var block in blocks)
+        {
+            if (!hasConflict(block, blockToRemove))
+            {
+                // If no overlap, keep the original block
+                result.Add(block);
+                continue;
+            }
+
+            // Case 1: blockToRemove fully overlaps the current block
+            if (blockToRemove.StartTime <= block.StartTime && blockToRemove.EndTime >= block.EndTime)
+            {
+                continue; // Skip this block entirely
+            }
+
+            // Case 2: blockToRemove overlaps the start of the current block
+            if (blockToRemove.StartTime <= block.StartTime && blockToRemove.EndTime < block.EndTime)
+            {
+                result.Add(new TimeBlock(blockToRemove.EndTime, block.EndTime));
+                continue;
+            }
+
+            // Case 3: blockToRemove overlaps the end of the current block
+            if (blockToRemove.StartTime > block.StartTime && blockToRemove.EndTime >= block.EndTime)
+            {
+                result.Add(new TimeBlock(block.StartTime, blockToRemove.StartTime));
+                continue;
+            }
+
+            // Case 4: blockToRemove is in the middle of the current block (splitting it)
+            if (blockToRemove.StartTime > block.StartTime && blockToRemove.EndTime < block.EndTime)
+            {
+                result.Add(new TimeBlock(block.StartTime, blockToRemove.StartTime));
+                result.Add(new TimeBlock(blockToRemove.EndTime, block.EndTime));
+            }
+        }
+
+        return result;
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is TimeBlock other)
@@ -71,10 +115,5 @@ public struct TimeBlock
             return this.StartTime == other.StartTime && this.EndTime == other.EndTime;
         }
         return false;
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(StartTime, EndTime);
     }
 }
