@@ -70,8 +70,46 @@ public class CalendarService
                     freeTime[i].Add(new TimeBlock(timeBlock.StartTime, timeBlock.EndTime));
                 }
             }
+
+            // Remove time blocks that overlap with events in the calendar for this day
+            foreach (var userEvent in userCal.events)
+            {
+                if ((int)userEvent.EventDate.DayOfWeek == sourceIndex)
+                {
+                    freeTime[i] = TimeBlock.RemoveTimeBlock(freeTime[i], userEvent.EventTimeBlock);
+                }
+            }
         }
 
         return freeTime;
     }
+
+    public static List<List<TimeBlock>> GenerateSchedule(Calendar userCal)
+    {
+        // Initialize busyTime with empty lists for all 7 days
+        List<List<TimeBlock>> busyTime = new List<List<TimeBlock>>();
+        for (int i = 0; i < 7; i++)
+        {
+            busyTime.Add(new List<TimeBlock>());
+        }
+
+        // Get today's day of week (6 for Saturday)
+        int todayDayOfWeek = (int)DateTime.Today.DayOfWeek;
+
+        // Iterate through the events in the calendar
+        foreach (var userEvent in userCal.events)
+        {
+            int eventDayOfWeek = (int)userEvent.EventDate.DayOfWeek;
+            int dayOffset = (eventDayOfWeek - todayDayOfWeek + 7) % 7;
+
+            // Only consider events within the next 7 days
+            if (dayOffset < 7)
+            {
+                busyTime[dayOffset].Add(userEvent.EventTimeBlock);
+            }
+        }
+
+        return busyTime;
+    }
+    
 }

@@ -29,8 +29,8 @@ public class EventServiceTests
 
         var user1 = new UserInfo
         {
-            displayName = "User1",
-            userAvailability = new Availability
+            DisplayName = "User1",
+            UserAvailability = new Availability
             {
                 weeklySchedule = new List<TimeBlock>[]
                 {
@@ -43,13 +43,13 @@ public class EventServiceTests
                     new List<TimeBlock>()  // Saturday
                 }
             },
-            inviteInbox = new List<EventInvite>()
+            InviteInbox = new List<EventInvite>()
         };
 
         var user2 = new UserInfo
         {
-            displayName = "User2",
-            userAvailability = new Availability
+            DisplayName = "User2",
+            UserAvailability = new Availability
             {
                 weeklySchedule = new List<TimeBlock>[]
                 {
@@ -62,7 +62,7 @@ public class EventServiceTests
                     new List<TimeBlock>()  // Saturday
                 }
             },
-            inviteInbox = new List<EventInvite>()
+            InviteInbox = new List<EventInvite>()
         };
 
         var testEvent = new Event(
@@ -97,8 +97,8 @@ public class EventServiceTests
 
         var user = new UserInfo
         {
-            displayName = "TestUser",
-            userAvailability = new Availability
+            DisplayName = "TestUser",
+            UserAvailability = new Availability
             {
                 weeklySchedule = new List<TimeBlock>[]
                 {
@@ -111,7 +111,7 @@ public class EventServiceTests
                     new List<TimeBlock>()  // Saturday
                 }
             },
-            inviteInbox = new List<EventInvite>()
+            InviteInbox = new List<EventInvite>()
         };
 
         var testEvent = new Event(
@@ -155,8 +155,8 @@ public class EventServiceTests
 
         var user = new UserInfo
         {
-            displayName = "TestUser",
-            userAvailability = new Availability
+            DisplayName = "TestUser",
+            UserAvailability = new Availability
             {
                 weeklySchedule = new List<TimeBlock>[]
                 {
@@ -169,7 +169,7 @@ public class EventServiceTests
                     new List<TimeBlock>()  // Saturday
                 }
             },
-            inviteInbox = new List<EventInvite>()
+            InviteInbox = new List<EventInvite>()
         };
 
         var testEvent = new Event(

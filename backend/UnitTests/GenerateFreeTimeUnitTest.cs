@@ -123,4 +123,41 @@ public class GenerateFreeTimeUnitTest
         Assert.Equal(new TimeOnly(16, 0), result[6][1].StartTime);
         Assert.Equal(new TimeOnly(18, 0), result[6][1].EndTime);
     }
+
+    [Fact]
+    public void TestGenerateFreeTime_ConsidersCalendarEventsAndAvailability()
+    {
+        // Arrange
+        var calendar = new Calendar();
+        var availability = new Availability();
+
+        // Populate availability for a specific day (Monday)
+        availability.weeklySchedule[1] = new List<TimeBlock> {
+            new TimeBlock(new TimeOnly(9, 0), new TimeOnly(12, 0)),
+            new TimeBlock(new TimeOnly(13, 0), new TimeOnly(17, 0))
+        };
+
+        // Add an event that overlaps with availability
+        calendar.events.Add(new Event
+        {
+            EventDate = new DateTime(2024, 4, 22), // Monday
+            EventTimeBlock = new TimeBlock(new TimeOnly(10, 0), new TimeOnly(11, 0))
+        });
+
+        // Act
+        var result = CalendarService.GenerateFreeTime(calendar, availability);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(7, result.Count); // Ensure the result contains 7 days
+
+        // Verify Monday's free time
+        Assert.Equal(3, result[2].Count); // Monday (index 2 in result)
+        Assert.Equal(new TimeOnly(9, 0), result[2][0].StartTime);
+        Assert.Equal(new TimeOnly(10, 0), result[2][0].EndTime);
+        Assert.Equal(new TimeOnly(11, 0), result[2][1].StartTime);
+        Assert.Equal(new TimeOnly(12, 0), result[2][1].EndTime);
+        Assert.Equal(new TimeOnly(13, 0), result[2][2].StartTime);
+        Assert.Equal(new TimeOnly(17, 0), result[2][2].EndTime);
+    }
 }
