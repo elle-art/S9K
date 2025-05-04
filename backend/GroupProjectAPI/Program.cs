@@ -3,6 +3,7 @@ using Google.Cloud.Firestore;
 using Backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://10.0.0.202:5000");
 
 // Set Firebase credentials (only once at startup)
 string keyPath = Path.Combine(Directory.GetCurrentDirectory(), "firebase", "firebase-key.json");
@@ -54,12 +55,18 @@ app.MapGet("/test-dummy", async () =>
     }
 });
 
-app.UseCors("AllowAll");  // ✅ Apply the CORS policy
+app.UseCors("AllowAll");  //Apply the CORS policy
 
 // app.UseHttpsRedirection();
 
 app.UseAuthorization();  // Important if you plan to add authentication
 
 app.MapControllers();  // Maps all controllers automatically
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Incoming request: {context.Request.Method} {context.Request.Path}");
+    await next.Invoke();
+});
 
 app.Run();

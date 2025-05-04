@@ -2,7 +2,7 @@ namespace backend.models;
 
 public class EventInviteService
 {
-    public void respondToInvite(ref Calendar userCal, bool RSVP, EventInvite curInvite)
+    public void RespondToInvite(ref Calendar userCal, bool RSVP, EventInvite curInvite)
     {
         if(RSVP)
         {

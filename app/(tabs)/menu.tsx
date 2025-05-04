@@ -6,7 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useUser } from '@/frontend/utils/user/userProvider';
-import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
+// import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
 
 // TO-DO: create indicator for new inbox message
 // TO-DO:  create button components/onPress()
@@ -64,7 +64,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <AvailabilityGraph />
+        {/* <AvailabilityGraph /> */}
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>

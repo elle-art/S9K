@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, SafeAreaView, TextInput } from 'react-native';
+import { Platform, StyleSheet, TextInput, Button } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/frontend/constants/Colors';
@@ -9,13 +9,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { hasUsername as checkUsernameExists } from '@/backend/firebase/userHelper';
+import { hasUsername as checkUsernameExists } from '@/frontend/firebase-api/userHelper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
-  const [name, onChangeName] = useState(''); // TO-DO: add logic to create user account after input in onChangeName function
+  const [name, onChangeName] = useState(''); 
 
   useEffect(() => {
     const checkUser = async () => {
@@ -30,8 +29,6 @@ export default function TabLayout() {
     // Optional: add a loading spinner here
     return null;
   }
-
-  const user = false; // use for dev testing
 
   if (!hasUsername) {
     return (
@@ -51,6 +48,17 @@ export default function TabLayout() {
             keyboardType="ascii-capable"
           />
         </ThemedView>
+         <Button
+          title="Create Account"
+          onPress={async () => {
+            if (name) {
+              const result = await checkUsernameExists(); // re-check username state
+              setHasUsername(result);
+            } else {
+              alert('Please enter a valid name');
+            }
+          }}
+        />
       </ThemedView>
     );
   } else {
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 8,
-    marginTop: 260,
+    marginTop: 180,
   },
   inputContainer: {
     gap: 8,

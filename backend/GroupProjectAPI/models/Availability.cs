@@ -1,6 +1,4 @@
 namespace backend.models;
-
-using static backend.models.TimeBlock;
 using Google.Cloud.Firestore;
 
 
@@ -17,6 +15,12 @@ public class Availability
     public Availability()
     {
         weeklySchedule = new List<TimeBlock>[7];
+    }
+
+
+    public Availability(List<TimeBlock>[] list)
+    {
+        weeklySchedule = list;
     }
 
     public void EditAvailability(int day, TimeBlock block, bool isDelete = false)

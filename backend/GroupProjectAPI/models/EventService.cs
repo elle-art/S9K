@@ -54,7 +54,7 @@ public class EventService
 
         // Get all users' availability blocks for the desired day
         var allUserAvailabilities = curEvent.EventGroup
-            .Select(user => user.userAvailability.weeklySchedule[desiredDayOfWeek])
+            .Select(user => user.UserAvailability.weeklySchedule[desiredDayOfWeek])
             .ToList();
 
         // Find all possible overlapping time blocks
@@ -144,14 +144,14 @@ public class EventService
         return false;
     }
 
-    public void AddUserToGroup(ref Event curEvent, string userName)
+    public void AddUserToGroup(ref Event curEvent, UserInfo u)
     {
-        // Add user to group bases on their user name
+        curEvent.EventGroup.Add(u);
     }
 
-    public void RemoveUserFromGroup(ref Event curEvent, UserInfo user)
+    public void RemoveUserFromGroup(ref Event curEvent, UserInfo u)
     {
         //Assumption made is that we know the user is in the group, so we don't need to check the list first
-        curEvent.EventGroup.Remove(user);
+        curEvent.EventGroup.Remove(u);
     }
 }

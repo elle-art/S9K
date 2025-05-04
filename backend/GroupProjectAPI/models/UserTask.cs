@@ -6,23 +6,28 @@ using Google.Cloud.Firestore;
 public class UserTask
 {
     [FirestoreProperty]
-    public string taskName { get; set; }
+    public string TaskName { get; set; }
     [FirestoreProperty]
-    public DateTime? taskDate { get; set; }
+    public DateTime? TaskDate { get; set; }
     [FirestoreProperty]
-    public bool taskStatus { get; set; }
+    public bool TaskStatus { get; set; }
+
+    public UserTask() {
+        TaskName = "";
+        TaskStatus = false;
+    }
 
     public UserTask(string taskName, DateTime? taskDate, bool taskStatus)
     {
-        this.taskName = taskName;
+        this.TaskName = taskName;
 
         //Tasks can be created with or without a date
         if (taskDate != null)
         {
-            this.taskDate = taskDate;
+            this.TaskDate = taskDate;
         }
 
-        this.taskStatus = taskStatus;
+        this.TaskStatus = taskStatus;
     }
 
     //Looks at a combo of the availability and current calendar in order to suggest a task time.

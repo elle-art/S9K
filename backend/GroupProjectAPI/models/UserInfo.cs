@@ -6,17 +6,33 @@ using Google.Cloud.Firestore;
 public class UserInfo
 {
     [FirestoreProperty]
-    public required string displayName { get; set; }
+    public string DisplayName { get; set; }
     [FirestoreProperty]
-    public Availability? userAvailability { get; set; }
+    public Availability? UserAvailability { get; set; }
     [FirestoreProperty]
-    public List<UserTask>? taskList { get; set; }
+    public List<UserTask>? TaskList { get; set; }
     [FirestoreProperty]
-    public List<TimeBlock>? preferredTimes { get; set; }
+    public List<TimeBlock>? PreferredTimes { get; set; }
     [FirestoreProperty]
-    public required List<EventInvite> inviteInbox { get; set; }
+    public List<EventInvite> InviteInbox { get; set; }
     [FirestoreProperty]
-    public Calendar? userCalendar { get; set; }
+    public Calendar? UserCalendar { get; set; }
     [FirestoreProperty]
-    public string? weeklyGoal { get; set; }
+    public string? WeeklyGoal { get; set; }
+
+    public UserInfo() { 
+        DisplayName = "";
+        InviteInbox = new List<EventInvite>();
+    }
+    public UserInfo(string name, Availability availability, List<UserTask> tasks, List<TimeBlock> preferred, List<EventInvite> invites, Calendar calendar = null, string goal = "schedule more!")
+    {
+        this.DisplayName = name;
+        this.UserAvailability = availability;
+        this.TaskList = tasks;
+        this.PreferredTimes = preferred;
+        this.InviteInbox = invites;
+        this.UserCalendar = calendar;
+        this.WeeklyGoal = goal;
+    }
 }
+

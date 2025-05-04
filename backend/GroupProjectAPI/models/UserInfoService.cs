@@ -1,58 +1,55 @@
 namespace backend.models;
 
-using Google.Cloud.Firestore;
-
+using System.Threading.Tasks;
+using Backend.Services;
 public class UserInfoServices
 {
-    public async Task<UserInfo> createUserInfo(UserInfo u)
+    /// <summary>
+    /// Create a new user object and save it to Firebase
+    /// </summary>
+    /// <param name="u"></param>
+    /// <returns></returns>
+    public static async Task<UserInfo> CreateUserInfo(string name, Availability availability, List<UserTask> tasks, List<TimeBlock> preferred, List<EventInvite> invites, Calendar calendar = null, string goal = "schedule more!")
     {
-        //FirebaseCommunications db = new FirebaseCommunications();
-        //DocumentReference docRef = db.Collection("users").Document(u.displayName); // needs FBComm class impl, but the collection does exist in FB project console
-        UserInfo user = new UserInfo
-        {
-            displayName = u.displayName,
-            userAvailability = u.userAvailability,
-            taskList = u.taskList,
-            preferredTimes = u.preferredTimes,
-            inviteInbox = u.inviteInbox,
-            weeklyGoal = u.weeklyGoal,
-        };
-        //await docRef.SetAsync(user);
+        UserInfo user = new UserInfo(name, availability, tasks, preferred, invites, calendar, goal);
+
+        await DBCommunications.SaveObjectAsync(name, user);
 
         return user;
     }
 
-    public void respondToInvite(bool response)
+    public void RespondToInvite(bool response)
     {
         // TODO: configure messages between user's in FB
     }
 
-    // Dependent on FBComm impl
-    public void saveUser(ref UserInfo curUser)
+    /// <summary>
+    /// Create a new user object and save it to firebase
+    /// </summary>
+    /// <param name="curUser"></param>
+    /// <returns></returns>
+    public static async void UpdateUserInfo(UserInfo curUser)
     {
-        //FirebaseCommunications dbTrans = new FirebaseCommunications();
-        //dbTrans.save(curUser);
+        await DBCommunications.SaveObjectAsync(curUser.DisplayName, curUser);
     }
 
-    public void updateUser(ref UserInfo curUser)
+    /// <summary>
+    /// Create a new user object and save it to firebase
+    /// </summary>
+    /// <param name="uid"></param>
+    /// <returns></returns>
+    public async Task<Availability> GetUserAvailability(string uid)
     {
-        //FirebaseCommunications dbTrans = new FirebaseCommunications();
-        //dbTrans.update(curUser);
+        return await AvailabilityService.GetAvailabilityAsync(uid);
     }
 
-    public void getUserInfo(ref UserInfo curUser)
-    {// might change to getUserByID?
-        //FirebaseCommunications dbTrans = new FirebaseCommunications();
-        //dbTrans.get(curUser);
-    }
-
-    public Availability getUserAvailability(ref UserInfo curUser)
+    /// <summary>
+    /// Create a new user object and save it to firebase
+    /// </summary>
+    /// <param name="uid"></param>
+    /// <returns></returns>
+    public static async Task<UserInfo> GetUserInfo(string uid)
     {
-        return curUser.userAvailability;
-    }
-
-    public string getName(ref UserInfo curUser)
-    {
-        return curUser.displayName;
+        return await DBCommunications.GetObjectAsync<UserInfo>(uid, "UserInfo");
     }
 }
