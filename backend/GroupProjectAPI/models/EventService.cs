@@ -25,12 +25,12 @@ public class EventService
     /// <param name="group">the group of people in the event</param>
     /// <returns></returns>
     public static async Task<Event> CreateEventAsync(
-        string uid, 
-        string eventName, 
-        DateTime eventDate, 
-        TimeBlock eventTimeBlock, 
-        string eventType, 
-        List<UserInfo> group) 
+        string uid,
+        string eventName,
+        DateTime eventDate,
+        TimeBlock eventTimeBlock,
+        string eventType,
+        List<UserInfo> group)
     {
 
         Event newEvent = new Event(eventName, eventDate, eventTimeBlock, eventType, group);
