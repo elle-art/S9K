@@ -116,11 +116,6 @@ public class EventService
         return sharedAvailability;
     }
 
-    private bool HasOverlap(TimeBlock block1, TimeBlock block2)
-    {
-        return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
-    }
-
     //To-do: finish Calendar implementation to test editing of events
     //To-do: ICS event update, although this is on the back-burner
     public void EditEvent(ref Event eventTBE, string? name, DateTime? date, TimeBlock? time, string? type)

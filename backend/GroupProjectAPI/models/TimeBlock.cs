@@ -17,7 +17,7 @@ public struct TimeBlock
 
     public int getLength()
     {
-        return (int)(EndTime - StartTime).TotalHours;
+        return (int)(EndTime - StartTime).TotalMinutes;
     }
 
     public static TimeBlock mergeTimeBlock(TimeBlock initialTimeBlock, TimeBlock compTimeBlock)
@@ -116,6 +116,10 @@ public struct TimeBlock
         return false;
     }
 
+    public static bool HasOverlap(TimeBlock block1, TimeBlock block2)
+    {
+        return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
+    }
 }
 
 public class TimeOnlyConverter : IFirestoreConverter<TimeOnly>
