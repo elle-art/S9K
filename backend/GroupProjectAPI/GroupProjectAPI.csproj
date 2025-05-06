@@ -4,6 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- This line makes the UNIT_TEST symbol visible while the test project
+       (and any projects it builds) are being compiled. -->
+  <DefineConstants>$(DefineConstants);UNIT_TEST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

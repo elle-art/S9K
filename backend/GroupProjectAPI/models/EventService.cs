@@ -1,8 +1,8 @@
-namespace backend.models;
+namespace Backend.Models;
 
 using System;
 using System.Globalization;
-using static backend.models.TimeBlock;
+using static Backend.Models.TimeBlock;
 using Google.Cloud.Firestore;
 using Backend.Services;
 

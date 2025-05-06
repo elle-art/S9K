@@ -1,7 +1,8 @@
-namespace backend.models;
 using Google.Cloud.Firestore;
 
-
+namespace Backend.Models 
+{
+    
 [FirestoreData]
 public class Availability
 {
@@ -86,4 +87,5 @@ public class Availability
         // Use TimeBlock's RemoveTimeFromBlocks method to handle the removal
         weeklySchedule[day] = TimeBlock.RemoveTimeBlock(weeklySchedule[day], blockToDelete);
     }
+}
 }
