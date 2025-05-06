@@ -14,15 +14,25 @@ namespace Backend.Services
     private static readonly Dictionary<string, object> _mem =
         new(StringComparer.OrdinalIgnoreCase);
 
-    public static Task SaveObjectAsync<T>(string key, T obj)
+    // 🔒 1.  private helper that really writes to the dictionary
+    private static Task SaveByKeyAsync<T>(string key, T obj)
     {
         _mem[key] = obj!;
         return Task.CompletedTask;
     }
 
-    public static Task<T?> GetObjectAsync<T>(string key, string _)
+    // 2️⃣  public overload used by most code  (uid + className + obj)
+    public static Task SaveObjectAsync<T>(string uid, string className, T obj)
+        => SaveByKeyAsync($"{uid}:{className.ToLower()}", obj);
+
+    // 3️⃣  convenience overload  (uid + obj)
+    public static Task SaveObjectAsync<T>(string uid, T obj)
+        => SaveObjectAsync(uid, typeof(T).Name.ToLower(), obj);
+
+    // 4️⃣  read helper  (uid + className)
+    public static Task<T?> GetObjectAsync<T>(string uid, string className)
     {
-        _mem.TryGetValue(key, out var val);
+        _mem.TryGetValue($"{uid}:{className.ToLower()}", out var val);
         return Task.FromResult((T?)val);
     }
 #else               // ─────────── 3.  real firebase code  ────────────────

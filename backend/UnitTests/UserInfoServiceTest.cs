@@ -1,3 +1,7 @@
+using Xunit;
+using Backend.Services;
+using Backend.Models;
+
 public class UserInfoServiceTests 
 {
     [Fact]

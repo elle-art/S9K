@@ -1,4 +1,4 @@
-namespace backend.models;
+namespace Backend.Models;
 using Backend.Services;
 public class TaskService
 {
