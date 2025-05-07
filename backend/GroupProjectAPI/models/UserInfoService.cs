@@ -20,9 +20,27 @@ public class UserInfoServices
         return user;
     }
 
-    public void RespondToInvite(bool response)
+    public async void RespondToInvite(EventInvite curInvite, bool response, string uid)
     {
-        // TODO: configure messages between user's in FB
+        if (response == true)
+        {
+            var eventCopy = new Event
+            {
+                EventName = curInvite.PreConstructedEvent.EventName,
+                EventDate = curInvite.PreConstructedEvent.EventDate,
+                EventTimeBlock = curInvite.PreConstructedEvent.EventTimeBlock,
+                EventType = curInvite.PreConstructedEvent.EventType,
+                EventGroup = new List<UserInfo>(curInvite.PreConstructedEvent.EventGroup)
+            };
+            await CalendarService.AddEventToCalendar(uid, eventCopy);
+        }
+
+        var userInfo = await GetUserInfo(uid);
+        if (userInfo != null)
+        {
+            userInfo.InviteInbox.Remove(curInvite);
+            UpdateUserInfo(userInfo);
+        }
     }
 
     /// <summary>

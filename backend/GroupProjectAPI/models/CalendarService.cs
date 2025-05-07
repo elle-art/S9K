@@ -8,7 +8,7 @@ public class CalendarService
 
     private static Calendar _calendar = new Calendar();
 
-    //To-do: National Holiday retrieval logic
+
     public List<DateTime> retrieveNationalHolidays()
     {
         var usaPublicHoliday = new USAPublicHoliday();
