@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
-//import { getInboxInvites } from '@/frontend/hooks/getInboxInvites';
+
 
 export default function InboxScreen() {
   const [invites, setInvites] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
-      // const data = await getInboxInvites();
-      // setInvites(data);
+      //const data = await getInboxInvites();
+      //setInvites(data);
     })();
   }, []);
 

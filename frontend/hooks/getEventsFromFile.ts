@@ -1,4 +1,3 @@
-import CalendarLogger from './frontend/hooks/calendarDataRetriever';
 import * as FileSystem from 'expo-file-system';
 
 const FILE_URI = `${FileSystem.documentDirectory}events.json`;
@@ -17,7 +16,7 @@ export const getEventsFromPhoneCalendar = async () => {
 
     return parsedEvents;
   } catch (error) {
-    console.log('Caught error reading file:', error.message);
+    //console.log('Caught error reading file:', error.message);
     console.log('Caught error object:', error);
     return [];
   }
