@@ -42,8 +42,7 @@ public class EventService
 
     //To-do: Event time generation algorithm
     //To-do: consideration of preferred times
-    //I made this static because to my knowledge we can do it, but if this causes issues then simply remove the static keyword
-    public static (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
+    public (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
     {
         if (curEvent.EventGroup == null || !curEvent.EventGroup.Any())
         {
@@ -78,8 +77,7 @@ public class EventService
         return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
     }
 
-    //I made this static as well, remove static if it causes problems
-    private static List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
+    private List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
     {
         if (!allUserAvailabilities.Any())
             return new List<TimeBlock>();
@@ -118,8 +116,7 @@ public class EventService
         return sharedAvailability;
     }
 
-    //I made this static, remove this if it is causing problems
-    private static bool HasOverlap(TimeBlock block1, TimeBlock block2)
+    private bool HasOverlap(TimeBlock block1, TimeBlock block2)
     {
         return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
     }
