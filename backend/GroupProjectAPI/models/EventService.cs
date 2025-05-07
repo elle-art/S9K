@@ -42,7 +42,7 @@ public class EventService
 
     //To-do: Event time generation algorithm
     //To-do: consideration of preferred times
-    public static (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
+    public (DateTime, TimeBlock) GenerateEventTime(ref Event curEvent, int numMin, DateTime desiredDate)
     {
         if (curEvent.EventGroup == null || !curEvent.EventGroup.Any())
         {
@@ -77,7 +77,7 @@ public class EventService
         return (desiredDate, new TimeBlock(TimeOnly.MaxValue, TimeOnly.MinValue));
     }
 
-    private static List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
+    private List<TimeBlock> FindOverlappingTimeBlocks(List<List<TimeBlock>> allUserAvailabilities)
     {
         if (!allUserAvailabilities.Any())
             return new List<TimeBlock>();
