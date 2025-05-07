@@ -14,7 +14,7 @@ public class GenerateFreeTimeUnitTest
 
         var result = CalendarService.GenerateFreeTime(calendar, availability);
 
-        for (int i = 2; i < 7; i++)
+        for (int i = 0; i < 7; i++)
         {
             Assert.Empty(result[i]);
         }
