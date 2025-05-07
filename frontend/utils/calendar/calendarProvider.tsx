@@ -1,6 +1,6 @@
 // TimelineCalendarScreen.tsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Button, ScrollView, Image } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Button, View } from 'react-native';
 import {
   ExpandableCalendar,
   TimelineList,
@@ -10,12 +10,19 @@ import {
 } from 'react-native-calendars';
 import groupBy from 'lodash/groupBy';
 import { getCalendarFromStorage } from '@/frontend/hooks/getCalendar';
-import { Calendar, Event, EVENT_TYPE_COLORS } from '@/frontend/constants/Calendar';
+import { Calendar, EVENT_TYPE_COLORS, S9KEvent } from '@/frontend/constants/Calendar';
 import { EditEventCard } from '@/components/EditEventCard';
 import { useUser } from '../user/userProvider';
 import { saveDataToSessionStorage, persistUserData } from '@/frontend/firebase-api/initializeData';
 import { buildFirebaseDataDoc } from '@/frontend/firebase-api/initializeUser';
 import { getStoredUid } from '@/frontend/firebase-api/storageHelper';
+import { Image, ScrollView } from 'react-native';
+import { getEventsFromPhoneCalendar } from '@/frontend/hooks/getEventsFromFile';
+//import { getEventsFromPhoneCalendar } from '@/frontend/hooks/getEventsFromFile';
+import { useEffect } from 'react';
+import { retrieveAndStoreCalendarEvents } from '@/frontend/hooks/calendarDataRetriever';
+import * as FileSystem from 'expo-file-system';
+
 
 const getDate = (offset = 0) => new Date(Date.now() + offset * 86400000).toISOString().split('T')[0];
 
@@ -55,7 +62,7 @@ export default function TimelineCalendarScreen() {
     (async () => {
       const cal = await getCalendarFromStorage();
       setCalendar(cal);
-      const evts = (cal?.events ?? []).map((e: Event, i: number) => ({
+      const evts = (cal?.events ?? []).map((e: S9KEvent, i: number) => ({
         id: `${i}`,
         start: `${e.date} ${e.time.startTime}`,
         end: `${e.date} ${e.time.endTime}`,
@@ -71,8 +78,52 @@ export default function TimelineCalendarScreen() {
           return acc;
         }, {} as typeof marked)
       );
-
     })();
+  }, []);
+
+  useEffect(() => {
+    const initializeCalendar = async () => {
+      try {
+        await retrieveAndStoreCalendarEvents();
+        const [storedCalendar, phoneEvents] = await Promise.all([
+          getCalendarFromStorage(),
+          getEventsFromPhoneCalendar()
+        ]);
+  
+        const storedEvents = storedCalendar?.events?.map((event: S9KEvent, index: number) => ({
+          id: `stored-${index}`,
+          start: `${event.date} ${event.time.startTime}`,
+          end: `${event.date} ${event.time.endTime}`,
+          title: event.name,
+          color: EVENT_TYPE_COLORS[event.type ?? 'default']
+        })) ?? [];
+  
+        const deviceEvents = phoneEvents.map((event: S9KEvent, index: number) => ({
+          id: `device-${index}`,
+          start: event.time.startTime,
+          end: event.time.endTime,
+          title: event.name || 'Untitled',
+          color: '#ADD8E6' // light blue for phone events
+        }));
+  
+        const allEvents = [...storedEvents, ...deviceEvents];
+  
+        const eventsByDate = groupBy(allEvents, e => CalendarUtils.getCalendarDateString(e.start));
+  
+        setCurrentDate(getDate());
+        //setEvents(allEvents);
+        setEventsByDate(eventsByDate);
+        setMarked(marked);
+  
+        const filePath = FileSystem.documentDirectory + 'events.json';
+        await FileSystem.writeAsStringAsync(filePath, JSON.stringify(allEvents, null, 2));
+        console.log("Events saved to file:", filePath);
+      } catch (error) {
+        console.error('Error initializing calendar:', error);
+      }
+    };
+  
+    initializeCalendar();
   }, []);
 
   const timelineProps: Partial<TimelineProps> = {
@@ -87,8 +138,8 @@ export default function TimelineCalendarScreen() {
     rightEdgeSpacing: 24,
   };
 
-  const handleSaveEvent = async (evt: Event) => {
-    const updatedEvents: Event[] = evt.id
+  const handleSaveEvent = async (evt: S9KEvent) => {
+    const updatedEvents: S9KEvent[] = evt.id
       ? calendar!.events.map(e => e.id === evt.id ? evt : e)
       : [...(calendar?.events || []), evt];
 

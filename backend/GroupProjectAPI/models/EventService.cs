@@ -1,8 +1,8 @@
-namespace backend.models;
+namespace Backend.Models;
 
 using System;
 using System.Globalization;
-using static backend.models.TimeBlock;
+using static Backend.Models.TimeBlock;
 using Google.Cloud.Firestore;
 using Backend.Services;
 
@@ -25,12 +25,12 @@ public class EventService
     /// <param name="group">the group of people in the event</param>
     /// <returns></returns>
     public static async Task<Event> CreateEventAsync(
-        string uid, 
-        string eventName, 
-        DateTime eventDate, 
-        TimeBlock eventTimeBlock, 
-        string eventType, 
-        List<UserInfo> group) 
+        string uid,
+        string eventName,
+        DateTime eventDate,
+        TimeBlock eventTimeBlock,
+        string eventType,
+        List<UserInfo> group)
     {
 
         Event newEvent = new Event(eventName, eventDate, eventTimeBlock, eventType, group);
@@ -114,11 +114,6 @@ public class EventService
         }
 
         return sharedAvailability;
-    }
-
-    private bool HasOverlap(TimeBlock block1, TimeBlock block2)
-    {
-        return block1.StartTime < block2.EndTime && block2.StartTime < block1.EndTime;
     }
 
     //To-do: finish Calendar implementation to test editing of events

@@ -1,4 +1,4 @@
-namespace backend.models;
+namespace Backend.Models;
 using Backend.Services;
 public class TaskService
 {
@@ -21,8 +21,33 @@ public class TaskService
     }
 
     //TO-DO: Task time Generation logic
-    public TimeBlock GenerateTaskTime(Availability userAvailability, Calendar userCalendar)
+    public TimeBlock GenerateTaskTime(Availability userAvailability, Calendar userCalendar, int taskDurationMinutes)
     {
+        int todayDayOfWeek = (int)DateTime.Today.DayOfWeek;
+        var todayAvailability = userAvailability.weeklySchedule[todayDayOfWeek];
+        var todayEvents = userCalendar.events
+            .Where(e => e.EventDate.Date == DateTime.Today.Date)
+            .Select(e => e.EventTimeBlock)
+            .ToList();
+
+        // Find free time blocks by removing event overlaps from availability
+        var freeTimeBlocks = todayAvailability;
+        foreach (var eventBlock in todayEvents)
+        {
+            freeTimeBlocks = TimeBlock.RemoveTimeBlock(freeTimeBlocks, eventBlock);
+        }
+
+        // Check for a time block that can accommodate the task duration
+        foreach (var block in freeTimeBlocks)
+        {
+            if (block.getLength() >= taskDurationMinutes)
+            {
+                var resultBlock = new TimeBlock(block.StartTime, block.StartTime.AddMinutes(taskDurationMinutes));
+                return resultBlock;
+            }
+        }
+
+        // Log default return value (No time block can is available for the day)
         return new TimeBlock(TimeOnly.MinValue, TimeOnly.MinValue);
     }
 
