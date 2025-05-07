@@ -35,4 +35,3 @@ public class UserInfo
         this.WeeklyGoal = goal;
     }
 }
-
