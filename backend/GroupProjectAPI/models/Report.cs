@@ -6,17 +6,19 @@ using Google.Cloud.Firestore;
 public class Report
 {
     [FirestoreProperty]
-    public DateTime reportDate { get; set; }
+    public DateTime ReportDate { get; set; }
     [FirestoreProperty]
-    public UserInfo userData { get; set; }
+    public UserInfo UserData { get; set; }
     [FirestoreProperty]
-    public List<UserTask> completedTasks { get; set; }
+    public List<UserTask> CompletedTasks { get; set; }
+    [FirestoreProperty]
+    public Dictionary<string, int> EventTypeCounts { get; set; }
 
     //Subject to change
-    public List<Event> eventData { get; set; }
+    public List<Event> EventData { get; set; }
 
     public Report()
     {
-        // constructor/createTask
+        // constructor
     }
 }
