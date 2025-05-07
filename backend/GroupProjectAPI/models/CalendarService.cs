@@ -1,4 +1,5 @@
 using Backend.Services;
+using PublicHoliday;
 
 namespace Backend.Models;
 
@@ -8,9 +9,23 @@ public class CalendarService
     private static Calendar _calendar = new Calendar();
 
     //To-do: National Holiday retrieval logic
-    public void retrieveNationalHolidays()
+    public List<DateTime> retrieveNationalHolidays()
     {
+        var usaPublicHoliday = new USAPublicHoliday();
+        // IHoliday format (Name, StartDate, EndDate)
+        var holidays = usaPublicHoliday.GetHolidaysInDateRange(DateTime.Today, DateTime.Today.AddMonths(2));
+        List<DateTime> inRangeHolidays = new List<DateTime>();
 
+
+        foreach (var holiday in holidays)
+        {
+            if (holiday < DateTime.Today.AddMonths(2))
+            {
+                inRangeHolidays.Add(holiday);
+            }
+        }
+        
+        return inRangeHolidays;
     }
 
     //To-do: ICS Parsing
@@ -44,46 +59,6 @@ public class CalendarService
         _calendar.events.Add(newEvent);
         await SaveCalendarAsync(uid);
     }
-
-    // public static List<List<TimeBlock>> GenerateFreeTime(Calendar userCal, Availability userAvailability)
-    // {
-    //     // Initialize freeTime with empty lists for all 7 days
-    //     List<List<TimeBlock>> freeTime = new List<List<TimeBlock>>();
-    //     for (int i = 0; i < 7; i++)
-    //     {
-    //         freeTime.Add(new List<TimeBlock>());
-    //     }
-
-    //     // Get today's day of week (6 for Saturday)
-    //     int todayDayOfWeek = (int)DateTime.Today.DayOfWeek;
-
-    //     // Copy availability for today and the next 6 days
-    //     for (int i = 0; i < 7; i++)
-    //     {
-    //         // Calculate which day in weeklySchedule to use (wrapping around to beginning if needed)
-    //         int sourceIndex = (todayDayOfWeek + i) % 7;
-
-    //         if (userAvailability.weeklySchedule[sourceIndex] != null)
-    //         {
-    //             foreach (var timeBlock in userAvailability.weeklySchedule[sourceIndex])
-    //             {
-    //                 freeTime[i].Add(new TimeBlock(timeBlock.StartTime, timeBlock.EndTime));
-    //             }
-    //         }
-
-    //         // Remove time blocks that overlap with events in the calendar for this day
-    //         foreach (var userEvent in userCal.events)
-    //         {
-    //             if ((int)userEvent.EventDate.DayOfWeek == sourceIndex)
-    //             {
-    //                 freeTime[i] = TimeBlock.RemoveTimeBlock(freeTime[i], userEvent.EventTimeBlock);
-    //             }
-    //         }
-    //     }
-
-    //     return freeTime;
-    // }
-
 
     // updated method
     public static List<List<TimeBlock>> GenerateFreeTime(Calendar calendar,
