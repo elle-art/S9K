@@ -3,18 +3,19 @@
     <ProjectReference Include="..\GroupProjectAPI\GroupProjectAPI.csproj" />
   </ItemGroup>
 
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- This line makes the UNIT_TEST symbol visible while the test project
+       (and any projects it builds) are being compiled. -->
+  <DefineConstants>$(DefineConstants);UNIT_TEST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
@@ -22,9 +23,4 @@
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GroupProjectAPI\GroupProjectAPI.csproj" />
-  </ItemGroup>
-
 </Project>

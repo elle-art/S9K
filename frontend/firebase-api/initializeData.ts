@@ -63,7 +63,7 @@ export async function saveUserData(uid: string, user: User) {
 
     try {
         // Send a POST request to your backend controller's save endpoint
-        const response = await fetch(`http://10.0.0.202:5000/api/user/save?uid=${uid}`, {
+        const response = await fetch(`http://10.255.5.83:5000/api/user/save?uid=${uid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,4 +124,4 @@ export async function getUserByDisplayName(displayName: string) {
       console.log("No user found with displayName:", displayName);
       return null;
     }
-  }
+}

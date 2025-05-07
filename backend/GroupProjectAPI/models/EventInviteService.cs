@@ -1,4 +1,4 @@
-namespace backend.models;
+namespace Backend.Models;
 
 public class EventInviteService
 {

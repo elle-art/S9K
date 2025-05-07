@@ -1,6 +1,8 @@
-namespace backend.models;
 using Backend.Services;
 using System.Text.Json;
+
+namespace Backend.Models 
+{
 public class AvailabilityService
 {
 
@@ -70,4 +72,5 @@ public class AvailabilityService
 
         return new Availability(weeklySchedule);
     }
+}
 }
