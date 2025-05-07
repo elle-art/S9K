@@ -52,8 +52,9 @@ export default function TabLayout() {
           title="Create Account"
           onPress={async () => {
             if (name) {
-              const result = await checkUsernameExists(); // re-check username state
-              setHasUsername(result);
+              //const result = await checkUsernameExists(); // re-check username state
+              //setHasUsername(result);
+              setHasUsername(true); // This will skip the username check and show the main tabs(remove this when done testing)
             } else {
               alert('Please enter a valid name');
             }
@@ -97,7 +98,15 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <SimpleLineIcons name="menu" size={24} color={color} />,
           }}
         />
+        <Tabs.Screen
+          name="inviteUsers"
+          options={{
+            title: 'Invite Users',
+            tabBarIcon: ({ color }) => <FontAwesome5 name="list-alt" size={24} color={color} />,
+          }}
+        />
       </Tabs>
+
     );
   }
 }
@@ -124,3 +133,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+

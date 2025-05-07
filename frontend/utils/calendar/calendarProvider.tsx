@@ -50,6 +50,28 @@ export default class TimelineCalendarScreen extends Component {
     marked: {}
   };
 
+addEvent = (eventDate: Date, eventName: string, eventDescription: string) => {
+    const { eventsByDate } = this.state;
+
+    const newEvent = {
+      id: `new-event-${Date.now()}`,
+      start: eventDate.toISOString(),
+      end: new Date(eventDate.getTime() + 60 * 60 * 1000).toISOString(), // Example: duration 1 hour
+      title: eventName,
+      color: '#ADD8E6', // Color for the new event
+    };
+
+    // Group the event by date and update state
+    const dateString = CalendarUtils.getCalendarDateString(eventDate.toISOString());
+    if (eventsByDate[dateString]) {
+      eventsByDate[dateString] = [...eventsByDate[dateString], newEvent];
+    } else {
+      eventsByDate[dateString] = [newEvent];
+    }
+
+    this.setState({ eventsByDate });
+  };
+
   async componentDidMount() {
     retrieveAndStoreCalendarEvents();
     await retrieveAndStoreCalendarEvents();
@@ -183,31 +205,31 @@ export default class TimelineCalendarScreen extends Component {
     const { currentDate, eventsByDate } = this.state;
 
     return (
-      <CalendarProvider
-        date={currentDate}
-        onDateChanged={this.onDateChanged}
-        onMonthChange={this.onMonthChange}
-        disabledOpacity={0.6}
-      >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} nestedScrollEnabled={true}>
-          <Image
-            source={require('@/frontend/assets/images/partial-react-logo.png')}
-            style={{ width: '100%', height: 200 }}
-          />
-          <ExpandableCalendar
-            firstDay={1}
-            markedDates={this.state.marked}
-            scrollEnabled
-          />
-          <TimelineList
-            events={eventsByDate}
-            timelineProps={this.timelineProps}
-            showNowIndicator
-            scrollToNow
-            initialTime={INITIAL_TIME}
-          />
-        </ScrollView>
-      </CalendarProvider>
+       <CalendarProvider
+              date={currentDate}
+              onDateChanged={this.onDateChanged}
+              onMonthChange={this.onMonthChange}
+              disabledOpacity={0.6}
+            >
+              <ScrollView contentContainerStyle={{ flexGrow: 1 }} nestedScrollEnabled={true}>
+                <Image
+                  source={require('@/frontend/assets/images/partial-react-logo.png')}
+                  style={{ width: '100%', height: 200 }}
+                />
+                <ExpandableCalendar
+                  firstDay={1}
+                  markedDates={this.state.marked}
+                  scrollEnabled
+                />
+                <TimelineList
+                  events={eventsByDate}
+                  timelineProps={this.timelineProps}
+                  showNowIndicator
+                  scrollToNow
+                  initialTime={INITIAL_TIME}
+                />
+              </ScrollView>
+            </CalendarProvider>
     );
   }
 }

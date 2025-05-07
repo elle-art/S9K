@@ -6,15 +6,11 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useUser } from '@/frontend/utils/user/userProvider';
-// import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
-
-// TO-DO: create indicator for new inbox message
-// TO-DO:  create button components/onPress()
+import { router } from 'expo-router';
 
 export default function ProfileScreen() {
   const [message, setMessage] = useState('Loading...');
   const { user } = useUser();
-
 
   return (
     <ParallaxScrollView
@@ -28,41 +24,30 @@ export default function ProfileScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">@{user?.displayName}</ThemedText>
         <HelloWave />
-        <TouchableOpacity  style={{
-              position: 'absolute',
-              right: -10,
-              top: -3,
-              paddingVertical: 4,
-              paddingHorizontal: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }} onPress={() => {/* your handler */ }}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => router.push('/settings')}
+        >
           <FontAwesome name="cog" size={24} color={'#fff'} />
         </TouchableOpacity>
       </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="default">"I, {user?.displayName}, will {user?.weeklyGoal}"</ThemedText>
+        <ThemedText type="default">
+          "I, {user?.displayName}, will {user?.weeklyGoal}"
+        </ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Availability</ThemedText>
-          <TouchableOpacity
-            onPress={() => {
-              // Your handler here
-              console.log('Edit button pressed');
-            }}
-            style={{
-              position: 'absolute',
-              right: -10,
-              paddingVertical: 2,
-              paddingHorizontal: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }}
-          >
-            <ThemedText>Edit</ThemedText>
-          </TouchableOpacity>
-        </ThemedView>
+        <ThemedText type="subtitle">Availability</ThemedText>
+        <TouchableOpacity
+          onPress={() => router.push('/editAvailability')}
+          style={styles.textButton}
+        >
+          <ThemedText>Edit</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
         {/* <AvailabilityGraph /> */}
       </ThemedView>
@@ -71,18 +56,8 @@ export default function ProfileScreen() {
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Events</ThemedText>
           <TouchableOpacity
-            onPress={() => {
-              // Your handler here
-              console.log('Edit button pressed');
-            }}
-            style={{
-              position: 'absolute',
-              right: -10,
-              paddingVertical: 2,
-              paddingHorizontal: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }}
+            onPress={() => router.push('/inbox')}
+            style={styles.textButton}
           >
             <ThemedText>View Inbox</ThemedText>
           </TouchableOpacity>
@@ -111,5 +86,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  iconButton: {
+    position: 'absolute',
+    right: -10,
+    top: -3,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+  },
+  textButton: {
+    position: 'absolute',
+    right: -10,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
   },
 });

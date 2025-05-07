@@ -32,7 +32,10 @@ export const initializeUser = async (name?: string) => {
   if (!userSnap.exists()) {
     await setDoc(userRef, {
       createdAt: Date.now(),
-      displayName: name,
+      //displayName: name,
+      displayName: name ?? "Anonymous1",
+
+
     });
     console.log("New account ");
   }
