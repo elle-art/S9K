@@ -10,16 +10,22 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { hasUsername as checkUsernameExists } from '@/frontend/firebase-api/userHelper';
+import { createUserInfo } from '@/frontend/firebase-api/initializeUser';
+import { getUserFromStorage } from '@/frontend/hooks/getUser';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [hasUsername, setHasUsername] = useState<boolean | null>(null); // null = loading
-  const [name, onChangeName] = useState(''); 
+  const [name, onChangeName] = useState('');
 
   useEffect(() => {
     const checkUser = async () => {
-      const result = await checkUsernameExists();
-      setHasUsername(result);
+      const user = await getUserFromStorage();
+      if (user) setHasUsername(true);
+      else {
+        const result = await checkUsernameExists();
+        setHasUsername(result);
+      }
     };
 
     checkUser();
@@ -48,12 +54,12 @@ export default function TabLayout() {
             keyboardType="ascii-capable"
           />
         </ThemedView>
-         <Button
+        <Button
           title="Create Account"
           onPress={async () => {
             if (name) {
-              const result = await checkUsernameExists(); // re-check username state
-              setHasUsername(result);
+              await createUserInfo(name);
+              setHasUsername(true);
             } else {
               alert('Please enter a valid name');
             }

@@ -4,7 +4,7 @@ using Backend.Models;
 using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://10.255.5.83:5000");
+builder.WebHost.UseUrls("http://192.168.1.101:5000");
 
 // Set Firebase credentials (only once at startup)
 string keyPath = Path.Combine(Directory.GetCurrentDirectory(), "firebase", "firebase-key.json");

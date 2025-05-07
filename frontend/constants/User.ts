@@ -1,6 +1,6 @@
-import { Event } from "./Calendar";
+import { Calendar, Event } from "./Calendar";
 
-export interface User {
+export interface S9KUser {
     displayName: string;
     invites: Invite[];
     tasks: Task[];
