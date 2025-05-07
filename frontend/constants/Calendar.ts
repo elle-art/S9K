@@ -1,7 +1,7 @@
 export interface Calendar {
     availability: TimeBlock[];
     preferredTimes: TimeBlock[];
-    events: Event[];
+    events: S9KEvent[];
 }
 
 export interface TimeBlock {
@@ -9,7 +9,7 @@ export interface TimeBlock {
     endTime: string;
 }
 
-export interface Event {
+export interface S9KEvent {
     id?: string; 
     name: string;
     date: string;
