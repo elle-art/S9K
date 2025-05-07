@@ -1,20 +1,31 @@
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { HelloWave } from '@/components/menu/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useUser } from '@/frontend/utils/user/userProvider';
+import { getCalendarFromStorage } from '@/frontend/hooks/getCalendar';
+import { Event } from '@/frontend/constants/Calendar';
+import { EventCard } from '@/components/EventCard';
+import { useRouter } from 'expo-router';
 // import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
 
 // TO-DO: create indicator for new inbox message
 // TO-DO:  create button components/onPress()
 
 export default function ProfileScreen() {
-  const [message, setMessage] = useState('Loading...');
+  const [calendar, setCalendar] = useState<any>(null);
   const { user } = useUser();
+  const router = useRouter();
 
+  useEffect(() => {
+    (async () => {
+      const data = await getCalendarFromStorage();
+      setCalendar(data);
+    })();
+  }, []);
 
   return (
     <ParallaxScrollView
@@ -28,41 +39,33 @@ export default function ProfileScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">@{user?.displayName}</ThemedText>
         <HelloWave />
-        <TouchableOpacity  style={{
-              position: 'absolute',
-              right: -10,
-              top: -3,
-              paddingVertical: 4,
-              paddingHorizontal: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }} onPress={() => {/* your handler */ }}>
+        <TouchableOpacity style={styles.settingsButton} onPress={() => router.push('/menu/settings')}>
           <FontAwesome name="cog" size={24} color={'#fff'} />
         </TouchableOpacity>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="default">"I, {user?.displayName}, will {user?.weeklyGoal}"</ThemedText>
+        <ThemedText type="default">"I, {user?.displayName}, will {user?.weeklyGoal ?? 'schedule more!'}"</ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Availability</ThemedText>
-          <TouchableOpacity
-            onPress={() => {
-              // Your handler here
-              console.log('Edit button pressed');
-            }}
-            style={{
-              position: 'absolute',
-              right: -10,
-              paddingVertical: 2,
-              paddingHorizontal: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }}
-          >
-            <ThemedText>Edit</ThemedText>
-          </TouchableOpacity>
-        </ThemedView>
+        <ThemedText type="subtitle">Availability</ThemedText>
+        <TouchableOpacity
+          onPress={() => {
+            // Your handler here
+            console.log('Edit button pressed');
+          }}
+          style={{
+            position: 'absolute',
+            right: -10,
+            paddingVertical: 2,
+            paddingHorizontal: 10,
+            backgroundColor: '#1D3D47',
+            borderRadius: 5,
+          }}
+        >
+          <ThemedText>Edit</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
       <ThemedView style={styles.stepContainer}>
         {/* <AvailabilityGraph /> */}
       </ThemedView>
@@ -80,7 +83,7 @@ export default function ProfileScreen() {
               right: -10,
               paddingVertical: 2,
               paddingHorizontal: 10,
-              backgroundColor: 'blue',
+              backgroundColor: '#1D3D47',
               borderRadius: 5,
             }}
           >
@@ -89,7 +92,21 @@ export default function ProfileScreen() {
         </ThemedView>
 
         <ThemedText type="defaultSemiBold">Upcoming</ThemedText>
+        {calendar?.events
+          ?.filter((event: Event) => new Date(event.date) >= new Date())
+          .map((event: Event, index: number) => (
+            <ThemedView key={index} style={{width: 350}}>
+              <EventCard event={event} />
+            </ThemedView>
+          ))}
         <ThemedText type="defaultSemiBold">Previous</ThemedText>
+        {calendar?.events
+          ?.filter((event: Event) => new Date(event.date) < new Date())
+          .map((event: Event, index: number) => (
+            <ThemedView key={index} style={{width: 350}}>
+              <EventCard event={event} />
+            </ThemedView>
+          ))}
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -112,4 +129,13 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  settingsButton: {
+    position: 'absolute',
+    right: -10,
+    top: -3,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#1D3D47',
+    borderRadius: 5
+  }
 });

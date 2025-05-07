@@ -1,5 +1,6 @@
 export interface Calendar {
     availability: TimeBlock[];
+    preferredTimes: TimeBlock[];
     events: Event[];
 }
 
@@ -9,6 +10,7 @@ export interface TimeBlock {
 }
 
 export interface Event {
+    id?: string; 
     name: string;
     date: string;
     time: TimeBlock;

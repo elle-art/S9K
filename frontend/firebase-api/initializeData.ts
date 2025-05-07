@@ -1,9 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '../constants/User';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
-//TO-DO: Pull the data stored in firebaseDataDoc from firebase
+// temp obj for testing
 // export const firebaseDataDoc = {
 //     displayName: "johnny123",
 //     inviteInbox: [
@@ -59,16 +58,15 @@ import { db } from "@/firebaseConfig";
 //     ]
 // };
 
-export async function saveUserData(uid: string, user: User) {
-
+export async function persistUserData(uid: string, updatedUser: any) {
     try {
         // Send a POST request to your backend controller's save endpoint
-        const response = await fetch(`http://10.0.0.202:5000/api/user/save?uid=${uid}`, {
+        const response = await fetch(`http://192.168.1.101:5000/api/user/save?uid=${uid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(uid), // Send the data to the backend
+            body: JSON.stringify(updatedUser), // Send the data to the backend
         });
 
         const result = await response.json();
@@ -83,8 +81,7 @@ export async function saveUserData(uid: string, user: User) {
     }
 }
 
-// TO-DO: add real firebase data
-export async function saveDataToStorage(firebaseDataDoc: any) {
+export async function saveDataToSessionStorage(firebaseDataDoc: any) {
     const user = {
         displayName: firebaseDataDoc.displayName,
         invites: firebaseDataDoc.inviteInbox,
@@ -94,6 +91,7 @@ export async function saveDataToStorage(firebaseDataDoc: any) {
 
     const calendar = {
         availability: firebaseDataDoc.userAvailability,
+        preferredTimes: firebaseDataDoc.preferredTimes,
         events: firebaseDataDoc.userCalendar
     };
 
@@ -111,17 +109,20 @@ export async function saveDataToStorage(firebaseDataDoc: any) {
     }
 };
 
-export async function getUserByDisplayName(displayName: string) {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("displayName", "==", displayName));
-    const querySnapshot = await getDocs(q);
-  
-    if (!querySnapshot.empty) {
-      const userDoc = querySnapshot.docs[0];
-      console.log("User found:", userDoc.id, userDoc.data());
-      return userDoc.data();
-    } else {
-      console.log("No user found with displayName:", displayName);
-      return null;
+export async function getUserByUID(uid: string) {
+    try {
+        const userDocRef = doc(db, 'users', uid);
+        const userInfoDocRef = doc(userDocRef, 'userinfo', 'primary');
+        const userInfoDoc = await getDoc(userInfoDocRef);
+
+        if (!userInfoDoc.exists()) {
+            console.log('No primary userinfo found for UID:', uid);
+            return null;
+        }
+
+        return userInfoDoc.data();
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return null;
     }
-  }
+}

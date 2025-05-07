@@ -9,7 +9,7 @@ import { initializeUser } from '@/frontend/firebase-api/initializeUser';
 import { app } from '@/firebaseConfig';
 import { useColorScheme } from '@/frontend/hooks/useColorScheme';
 import { UserProvider } from '@/frontend/utils/user/userProvider';
-import { firebaseDataDoc, saveDataToStorage } from '@/frontend/firebase-api/initializeData';
+import { saveDataToSessionStorage } from '@/frontend/firebase-api/initializeData';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,7 +31,6 @@ export default function RootLayout() {
         console.log("User signed in with UID:", uid);
         setUserReady(true);
         
-        await saveDataToStorage(firebaseDataDoc);
       } catch (error) {
         console.error("Error initializing user:", error);
       }

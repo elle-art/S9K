@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Backend.Models;
 using Backend.Services;
 using backend.models;
 using System.Text.Json;
@@ -24,6 +23,7 @@ namespace Backend.Controllers
             try
             {
                 var converted = ConvertJsonElement(rawUserData);
+                Console.Write(converted);
                 await DBCommunications.SaveObjectAsync(uid, "UserInfo", converted);
 
                 return Ok(new { success = true });
@@ -65,10 +65,8 @@ namespace Backend.Controllers
                     return list;
 
                 case JsonValueKind.String:
-                    if (element.TryGetDateTime(out var dateTime))
-                        return DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
                     return element.GetString();
-
+                    
                 case JsonValueKind.Number:
                     if (element.TryGetInt64(out var l))
                         return l;
