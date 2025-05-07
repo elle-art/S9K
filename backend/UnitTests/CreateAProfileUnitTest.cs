@@ -2,7 +2,10 @@ using Xunit;
 using Backend.Services;
 using Backend.Models;
 
-public class UserInfoServiceTests 
+/// <summary>
+/// test case for creating a profile
+/// </summary>
+public class CreateAProfileUnitTest
 {
     [Fact]
     public async Task CreateUserInfo_WritesToFakeDb_AndReturnsObject()
@@ -18,6 +21,6 @@ public class UserInfoServiceTests
 
         // Assert
         Assert.NotNull(fetched);
-        Assert.Equal("Bob", fetched!.DisplayName);              // path correctness
+        Assert.Equal("Bob", fetched!.DisplayName);  // path correctness
     }
 }

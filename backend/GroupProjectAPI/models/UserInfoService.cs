@@ -6,6 +6,7 @@ using Backend.Services;
 
 public class UserInfoServices
 {
+
     /// <summary>
     /// Create a new user object and save it to Firebase
     /// </summary>
@@ -54,4 +55,48 @@ public class UserInfoServices
     {
         return await DBCommunications.GetObjectAsync<UserInfo>(uid, "UserInfo");
     }
+
+    /// <summary>
+    /// Append a new <see cref="UserTask"/> to the user’s TaskList and persist the update.
+    /// Noop if the user record doesn’t exist.
+    /// </summary>
+    public static async Task AddToDoTaskAsync(string uid, UserTask newTask)
+    {
+        // Pull the latest copy
+        var user = await GetUserInfo(uid);
+        if (user == null) return;                       // or throw, if you prefer
+
+        user.TaskList ??= new List<UserTask>();         // lazy‑init
+        user.TaskList.Add(newTask);
+
+        // Re‑save the whole UserInfo document
+        await DBCommunications.SaveObjectAsync(uid, user);
+    }
+
+    /// <summary>
+    /// Replace the first task that matches <paramref name="taskToFind"/> with
+    /// <paramref name="replacement"/> inside the user’s TaskList and persist.
+    /// Returns <c>true</c> if a match was changed; otherwise <c>false</c>.
+    /// </summary>
+    public static async Task<bool> ModifyAToDoTaskAsync(
+            string uid,
+            UserTask taskToFind,
+            UserTask replacement)
+    {
+        var user = await GetUserInfo(uid);
+        if (user == null || user.TaskList == null) return false;
+
+        // Find the index of the first matching task (strict equality on all 3 fields)
+        int idx = user.TaskList.FindIndex(t =>
+               t.TaskName == taskToFind.TaskName &&
+               t.TaskDate == taskToFind.TaskDate &&
+               t.TaskStatus == taskToFind.TaskStatus);
+
+        if (idx == -1) return false;                  // no match: nothing to change
+
+        user.TaskList[idx] = replacement;             // in‑place overwrite
+        await DBCommunications.SaveObjectAsync(uid, user);
+        return true;
+    }
+
 }
