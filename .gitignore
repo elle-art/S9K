@@ -48,3 +48,5 @@ obj/
 
 # ignore the firebase private key
 /backend/GroupProjectAPI/firebase
+
+.idea
