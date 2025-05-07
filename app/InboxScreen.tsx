@@ -7,8 +7,8 @@ export default function InboxScreen() {
 
   useEffect(() => {
     (async () => {
-      const data = await getInboxInvites();
-      setInvites(data);
+      //const data = await getInboxInvites();
+      //setInvites(data);
     })();
   }, []);
 

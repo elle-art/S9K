@@ -23,7 +23,6 @@ import { useEffect } from 'react';
 import { retrieveAndStoreCalendarEvents } from '@/frontend/hooks/calendarDataRetriever';
 import * as FileSystem from 'expo-file-system';
 
-
 const getDate = (offset = 0) => new Date(Date.now() + offset * 86400000).toISOString().split('T')[0];
 
 export default function TimelineCalendarScreen() {
@@ -79,9 +78,7 @@ export default function TimelineCalendarScreen() {
         }, {} as typeof marked)
       );
     })();
-  }, []);
 
-  useEffect(() => {
     const initializeCalendar = async () => {
       try {
         await retrieveAndStoreCalendarEvents();
@@ -110,10 +107,10 @@ export default function TimelineCalendarScreen() {
   
         const eventsByDate = groupBy(allEvents, e => CalendarUtils.getCalendarDateString(e.start));
   
-        setCurrentDate(getDate());
+        //setCurrentDate(getDate());
         //setEvents(allEvents);
-        setEventsByDate(eventsByDate);
-        setMarked(marked);
+        //setEventsByDate(eventsByDate);
+        //setMarked(marked);
   
         const filePath = FileSystem.documentDirectory + 'events.json';
         await FileSystem.writeAsStringAsync(filePath, JSON.stringify(allEvents, null, 2));

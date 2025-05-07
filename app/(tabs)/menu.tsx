@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useUser } from '@/frontend/utils/user/userProvider';
 import { getCalendarFromStorage } from '@/frontend/hooks/getCalendar';
-import { Event } from '@/frontend/constants/Calendar';
+import { S9KEvent } from '@/frontend/constants/Calendar';
 import { EventCard } from '@/components/EventCard';
 import { useRouter } from 'expo-router';
 // import { AvailabilityGraph } from '@/components/menu/AvailabilityGraph';
@@ -93,16 +93,16 @@ export default function ProfileScreen() {
 
         <ThemedText type="defaultSemiBold">Upcoming</ThemedText>
         {calendar?.events
-          ?.filter((event: Event) => new Date(event.date) >= new Date())
-          .map((event: Event, index: number) => (
+          ?.filter((event: S9KEvent) => new Date(event.date) >= new Date())
+          .map((event: S9KEvent, index: number) => (
             <ThemedView key={index} style={{width: 350}}>
               <EventCard event={event} />
             </ThemedView>
           ))}
         <ThemedText type="defaultSemiBold">Previous</ThemedText>
         {calendar?.events
-          ?.filter((event: Event) => new Date(event.date) < new Date())
-          .map((event: Event, index: number) => (
+          ?.filter((event: S9KEvent) => new Date(event.date) < new Date())
+          .map((event: S9KEvent, index: number) => (
             <ThemedView key={index} style={{width: 350}}>
               <EventCard event={event} />
             </ThemedView>

@@ -1,12 +1,12 @@
 // User Interface for UserProvider
 'use client'
 import { createContext, ReactNode, useState, useEffect, useContext } from "react";
-import { User } from "@/frontend/constants/User";
+import { S9KUser } from "@/frontend/constants/User";
 import { getUserFromStorage } from "@/frontend/hooks/getUser";
 
 interface UserContextProps {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: S9KUser | null;
+  setUser: (user: S9KUser | null) => void;
 }
 
 const UserContext = createContext<UserContextProps> ({
@@ -19,7 +19,7 @@ interface UserProviderProps {
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<S9KUser | null>(null);
 
   useEffect(() => {
     (async () => {
