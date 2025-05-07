@@ -4,10 +4,9 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNCalendarEvents from 'react-native-calendar-events'; // import the package
 
 
-export default function InviteScreen() {
+export default function InviteScreen(this: any) {
   const [search, setSearch] = useState('');
   const [foundUsers, setFoundUsers] = useState<string[]>([]);
   const [foundUserIDs, setFoundUserIDs] = useState<string[]>([]);
@@ -19,22 +18,22 @@ export default function InviteScreen() {
   const [eventDuration, setEventDuration] = useState('');
   const [generatedTime, setGeneratedTime] = useState<Date | null>(null);
 
-  <InviteScreen addEventToCalendar={this.addEvent} />
+  // <InviteScreen addEventToCalendar={this.addEvent} />
 
-  const allFieldsFilled = (): boolean => {
-    return (
-      eventName.trim() &&
-      eventDescription.trim() &&
-      eventDuration.trim() &&
-      foundUserIDs.length > 0
-    );
-  };
+  // const allFieldsFilled = (): boolean => {
+  //   return (
+  //     eventName.trim() &&
+  //     eventDescription.trim() &&
+  //     eventDuration.trim() &&
+  //     foundUserIDs.length > 0
+  //   );
+  // };
 
   const generateTime = async () => {
-    if (!allFieldsFilled()) {
-      Alert.alert('Missing Information', 'Please fill out all fields and search for at least one user.');
-      return;
-    }
+    // if (!allFieldsFilled()) {
+    //   Alert.alert('Missing Information', 'Please fill out all fields and search for at least one user.');
+    //   return;
+    // }
 
     try {
       const payload = {
@@ -60,7 +59,7 @@ export default function InviteScreen() {
 
   const sendInvite = () => {
     Alert.alert('Invite Sent', `Event scheduled at ${generatedTime?.toLocaleString()}`);
-    addEventToCalendar(generatedTime, eventName, eventDescription);
+    // addEventToCalendar(generatedTime, eventName, eventDescription);
   };
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
@@ -87,7 +86,7 @@ export default function InviteScreen() {
         setFoundUserIDs((prev) => [...prev, response.data.userId]);
         setErrorMessage('');
         const userId = response.data.userId;
-          console.log("(ID: " + userId + ")");
+        console.log("(ID: " + userId + ")");
       } else {
         setErrorMessage(`User '${displayName}' not found`);
       }
@@ -192,7 +191,7 @@ export default function InviteScreen() {
         <Button
           title="Generate Time"
           onPress={generateTime}
-          disabled={!allFieldsFilled()}
+          //disabled={!allFieldsFilled()}
           color="#2196F3"
         />
       </View>
